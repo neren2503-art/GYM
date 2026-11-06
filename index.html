@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0D08">
+<meta name="description" content="إيقاع — ابنِ برنامج تمارينك الخاص: أقسام، تمارين بالوقت أو التكرار، وجلسة موجهة بالصوت مع إحصائيات كاملة">
+<title>إيقاع — برنامج تمارينك الشخصي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='10' width='4' height='9' rx='1.5' fill='%23CDF554'/%3E%3Crect x='10' y='4' width='4' height='15' rx='1.5' fill='%23CDF554'/%3E%3Crect x='17' y='8' width='4' height='11' rx='1.5' fill='%23CDF554'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ الأساسيات ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0B0D08; --bg2:#0F120B; --surface:#151910; --surface2:#1B2114;
+  --line:#242A1B; --line2:#333C27;
+  --text:#EFF3E4; --muted:#A6B096; --faint:#6F7A62;
+  --volt:#CDF554; --ink:#161A05;
+  --teal:#57D8C2; --amber:#FFC24B; --red:#FF6E6E;
+}
+html{color-scheme:dark;scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;-webkit-font-smoothing:antialiased;isolation:isolate;
+}
+/* خلفية محيطة خفيفة: حبيبات + إضاءة علوية باهتة */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.05"/></svg>'),
+    radial-gradient(900px 420px at 50% -8%, rgba(205,245,84,.05), transparent 60%);
+}
+::selection{background:var(--volt);color:var(--ink)}
+*[hidden]{display:none!important}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px;border:2px solid var(--bg)}
+:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+button{font-family:inherit;-webkit-tap-highlight-color:transparent}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=range]{accent-color:var(--volt);width:100%}
+
+.ic{display:inline-block;width:18px;height:18px;flex:none;vertical-align:middle}
+.wrap{max-width:920px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+
+/* ============ الأزرار ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;
+  font:600 14px/1 'IBM Plex Sans Arabic';padding:13px 20px;border-radius:13px;color:var(--text);
+  background:var(--surface2);transition:transform .15s,box-shadow .15s,background .2s,border-color .2s,opacity .2s}
+.btn .ic{width:16px;height:16px}
+.btn-volt{background:var(--volt);color:var(--ink);box-shadow:0 4px 0 rgba(0,0,0,.38)}
+.btn-volt:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn-volt:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.38)}
+.btn-ghost{background:transparent;border:1px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--faint);background:rgba(255,255,255,.03)}
+.btn-red{background:transparent;border:1px solid rgba(255,110,110,.45);color:var(--red)}
+.btn-red:hover{background:rgba(255,110,110,.09)}
+.btn[disabled]{opacity:.38;pointer-events:none}
+.btn.sm{padding:9px 14px;font-size:13px;border-radius:11px}
+.btn-block{width:100%}
+.icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;border:1px solid transparent;
+  background:transparent;color:var(--muted);cursor:pointer;transition:.18s}
+.icon-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--line)}
+.icon-btn.sm{width:32px;height:32px;border-radius:9px}
+.icon-btn .ic{width:17px;height:17px}
+
+/* ============ الرأس ============ */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:13px clamp(16px,4vw,32px);background:rgba(11,13,8,.78);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-txt h1{font:700 25px/1 Changa;color:var(--text)}
+.brand-txt span{display:block;font-size:11.5px;color:var(--faint);margin-top:3px}
+.mark{display:flex;align-items:flex-end;gap:3px;height:27px}
+.mark i{width:5px;border-radius:3px;background:var(--volt);display:block;transform-origin:bottom}
+.mark i:nth-child(1){height:11px}.mark i:nth-child(2){height:19px}.mark i:nth-child(3){height:13px}.mark i:nth-child(4){height:24px}
+body.playing .mark i{animation:eq .8s ease-in-out infinite alternate}
+body.playing .mark i:nth-child(2){animation-delay:.15s}
+body.playing .mark i:nth-child(3){animation-delay:.3s}
+body.playing .mark i:nth-child(4){animation-delay:.45s}
+@keyframes eq{from{transform:scaleY(.5)}to{transform:scaleY(1)}}
+.top-actions{display:flex;gap:6px;align-items:center}
+.btn-stats{padding:9px 14px;font-size:13px;border-radius:11px}
+.btn-stats .ic{width:15px;height:15px;color:var(--volt)}
+@media(max-width:520px){.btn-stats span{display:none}.btn-stats{padding:9px 11px}}
+@media(max-width:430px){.brand-txt span{display:none}}
+
+/* ============ المقدمة ============ */
+.intro{padding:clamp(36px,7vw,64px) 0 26px;animation:rise .6s cubic-bezier(.22,1,.36,1) both}
+.intro h2{font:700 clamp(30px,5.4vw,46px)/1.4 Changa;max-width:16ch}
+.hl{color:var(--volt);position:relative;display:inline-block;font-style:normal;white-space:nowrap}
+.hl svg{position:absolute;right:0;left:0;bottom:-2px;width:100%;height:11px;overflow:visible}
+.hl path{fill:none;stroke:var(--volt);stroke-width:3.5;stroke-linecap:round;opacity:.8;
+  stroke-dasharray:230;stroke-dashoffset:230;animation:draw 1s .5s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.intro p{color:var(--muted);margin-top:16px;max-width:60ch;font-size:15px;line-height:2}
+.intro-actions{margin-top:24px}
+.stats{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:28px;color:var(--muted);font-size:13.5px}
+.stat{display:flex;align-items:center;gap:8px}
+.stat .ic{width:16px;height:16px;color:var(--volt)}
+.stat-btn{cursor:pointer;background:none;border:0;padding:0;font:inherit;color:inherit;transition:color .2s}
+.stat-btn:hover{color:var(--volt)}
+
+/* ============ الأقسام ============ */
+.sections{display:flex;flex-direction:column;gap:14px;padding-bottom:20px}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:18px;position:relative;
+  transition:border-color .25s;animation:rise .55s cubic-bezier(.22,1,.36,1) both}
+.sec:hover{border-color:var(--line2)}
+.sec.open{border-color:rgba(205,245,84,.3)}
+.sec.open::after{content:'';position:absolute;inset-inline-start:-1px;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--volt)}
+.sec-head{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;user-select:none}
+.sec-index{font:700 32px/1 Changa;color:transparent;-webkit-text-stroke:1.3px var(--line2);transition:.35s;min-width:44px;text-align:center}
+.sec:hover .sec-index,.sec.open .sec-index{-webkit-text-stroke-color:rgba(205,245,84,.8)}
+.sec-info{flex:1;min-width:0}
+.sec-info h3{font:600 19px/1.35 Changa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sec-info p{color:var(--muted);font-size:12.5px;margin-top:3px}
+.sec-tools{display:flex;gap:2px}
+.sec-chev{color:var(--faint);transition:transform .35s,color .35s;width:20px;height:20px}
+.sec.open .sec-chev{transform:rotate(180deg);color:var(--volt)}
+.sec-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.22,1,.36,1)}
+.sec.open .sec-body{grid-template-rows:1fr}
+.sec-clip{overflow:hidden;min-height:0}
+.sec-inner{padding:4px 12px 14px}
+.ex-list{border-top:1px solid var(--line)}
+
+/* صف التمرين */
+.ex{display:flex;align-items:center;gap:10px;padding:13px 6px;border-bottom:1px solid var(--line);
+  border-radius:10px;transition:background .15s;cursor:pointer;position:relative}
+.ex:hover{background:rgba(255,255,255,.03)}
+.ex-main{flex:1;min-width:0}
+.ex-main h4{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-tags{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.tag .ic{width:13px;height:13px}
+.t-time{color:var(--volt)} .t-reps{color:var(--amber)} .t-rest{color:var(--teal)}
+.ex-actions{display:flex;gap:2px;opacity:0;transition:.2s}
+.ex:hover .ex-actions,.ex:focus-within .ex-actions{opacity:1}
+@media(hover:none){.ex-actions{opacity:1}}
+.add-ex{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;
+  padding:13px;border:1.5px dashed var(--line2);border-radius:13px;background:none;color:var(--muted);
+  font:600 13.5px 'IBM Plex Sans Arabic';cursor:pointer;transition:.2s}
+.add-ex:hover{border-color:var(--volt);color:var(--volt);background:rgba(205,245,84,.05)}
+.add-ex .ic{width:15px;height:15px}
+
+/* مقبض السحب */
+.grip{width:26px;height:32px;display:grid;place-items:center;color:var(--faint);cursor:grab;
+  background:none;border:0;touch-action:none;opacity:0;transition:opacity .2s}
+.sec:hover .grip,.ex:hover .grip,.grip:focus-visible{opacity:1}
+@media(hover:none){.grip{opacity:.7}}
+.grip .ic{width:15px;height:15px}
+.grip:active{cursor:grabbing}
+body.dragging-any{cursor:grabbing;user-select:none}
+.dragging{background:var(--surface2)!important;box-shadow:0 14px 36px rgba(0,0,0,.5);
+  border-color:transparent!important;z-index:30;transition:none!important;border-radius:12px}
+.sec.flash{animation:flashA 1s ease}
+.ex.flash{animation:flashB 1s ease}
+@keyframes flashA{0%{background-color:rgba(205,245,84,.16)}100%{background-color:var(--surface)}}
+@keyframes flashB{0%{background-color:rgba(205,245,84,.16)}100%{background-color:transparent}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+
+/* الحالة الفارغة */
+.empty{text-align:center;padding:70px 20px 40px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.empty .e-ic{width:66px;height:66px;color:var(--line2);margin-bottom:8px}
+.empty h3{font:700 25px Changa}
+.empty p{color:var(--muted);font-size:14px;max-width:42ch;line-height:1.9}
+.e-btns{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;justify-content:center}
+
+.foot{text-align:center;color:var(--faint);font-size:12px;padding:46px 16px 62px;line-height:1.9}
+
+/* ============ المشغّل ============ */
+.player{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
+  --ph:var(--volt);--pb:#0C0F07;background:var(--pb);transition:background .8s ease,opacity .32s ease;opacity:0}
+.player.show{opacity:1}
+.player[data-phase="rest"]{--ph:var(--teal);--pb:#07110F}
+.player[data-phase="prepare"]{--ph:#E9EDDC;--pb:#0D0E0B}
+.player[data-phase="reps"]{--ph:var(--amber);--pb:#13100A}
+.player[data-phase="done"]{--ph:var(--volt);--pb:#0B0F08}
+.p-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px clamp(16px,4vw,28px)}
+.p-title{display:flex;align-items:center;gap:12px;min-width:0}
+.p-title h3{font:600 21px Changa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{font-size:12px;color:var(--muted);border:1px solid var(--line2);padding:5px 12px;border-radius:99px;white-space:nowrap}
+@media(max-width:420px){.chip{display:none}}
+.p-confirm{position:absolute;top:68px;inset-inline-end:14px;z-index:8;display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--line2);border-radius:14px;padding:10px 12px;
+  font-size:13px;box-shadow:0 18px 44px rgba(0,0,0,.55);animation:rise .25s both;flex-wrap:wrap}
+.p-stage{flex:1;display:grid;place-items:center;padding:12px 16px;min-height:0;position:relative}
+.ringwrap{width:min(78vw,330px,56vh);aspect-ratio:1;position:relative;transition:transform .25s}
+.ringwrap.tappable{cursor:pointer}
+.player[data-phase="reps"] .ringwrap:hover{transform:scale(1.02)}
+.ringwrap.pop{animation:pressPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pressPop{0%{transform:scale(.93)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:#232A1B;stroke-width:7}
+.ring-bar{fill:none;stroke:var(--ph);stroke-width:7;stroke-linecap:round;transition:stroke .5s}
+.ring-head circle{fill:var(--ph);transition:fill .5s;transform-box:fill-box;transform-origin:center;
+  animation:headP 1.1s ease-in-out infinite}
+@keyframes headP{0%,100%{transform:scale(1)}50%{transform:scale(1.55)}}
+.player[data-phase="reps"] .ring-head,.player[data-phase="done"] .ring-head{opacity:0;transition:opacity .3s}
+.ph{position:absolute;inset:15%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:3px;padding:0 4px}
+.ph.anim{animation:stageIn .45s cubic-bezier(.22,1,.36,1)}
+@keyframes stageIn{from{opacity:0;transform:translateY(14px) scale(.98)}}
+.ph-label{font-size:13px;color:var(--muted);font-weight:500}
+.ph-name{font:600 clamp(22px,5.2vw,33px)/1.35 Changa;max-width:100%;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ph-time{font:800 clamp(56px,16vw,90px)/1.05 Changa;color:var(--ph);transition:color .5s;font-variant-numeric:tabular-nums}
+.ph-time.reps{font-size:clamp(48px,13vw,74px)}
+.ph-time.pulse{animation:tp .26s ease}
+@keyframes tp{0%{transform:scale(1.08)}100%{transform:scale(1)}}
+.player[data-phase="reps"] .ph-time{animation:softP 2.2s ease-in-out infinite}
+@keyframes softP{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+.ph-sub{font-size:12.5px;color:var(--muted);margin-top:7px;max-width:100%;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.ph-sub .ic{width:13px;height:13px;color:var(--ph)}
+.p-bottom{display:flex;flex-direction:column;align-items:center;gap:16px;
+  padding:8px 16px calc(22px + env(safe-area-inset-bottom))}
+.p-controls{display:flex;align-items:center;gap:18px}
+.cbtn{width:56px;height:56px;border-radius:50%;border:1px solid var(--line2);background:var(--surface);
+  color:var(--text);display:grid;place-items:center;cursor:pointer;transition:.18s}
+.cbtn:hover{border-color:var(--faint);transform:translateY(-1px)}
+.cbtn:active{transform:scale(.93)}
+.cbtn .ic{width:20px;height:20px}
+.cbtn.main{width:78px;height:78px;background:var(--volt);border:0;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.42)}
+.cbtn.main:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.cbtn.main:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.42)}
+.cbtn.main .ic{width:28px;height:28px}
+.p-dots{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:540px}
+.dot{--dc:var(--volt);width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line2);
+  background:transparent;padding:0;cursor:pointer;transition:.2s}
+.dot.rest{--dc:var(--teal);width:6px;height:6px}
+.dot.prep{--dc:var(--faint);width:6px;height:6px}
+.dot.done{background:var(--dc);border-color:var(--dc);opacity:.45}
+.dot.cur{background:var(--dc);border-color:var(--dc);animation:dotP 1s ease-in-out infinite}
+@keyframes dotP{0%,100%{transform:scale(1.35)}50%{transform:scale(1.7)}}
+.p-hint{font-size:11.5px;color:var(--faint)}
+@media(hover:none){.p-hint{display:none}}
+.p-paused{position:absolute;inset:0;display:grid;place-items:center;z-index:7;cursor:pointer;
+  background:rgba(7,9,5,.74);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.pp-box{display:flex;flex-direction:column;align-items:center;gap:16px;color:var(--text)}
+.pp-box .pp-c{width:96px;height:96px;border-radius:50%;border:2px solid var(--volt);display:grid;place-items:center;color:var(--volt)}
+.pp-box .pp-c .ic{width:38px;height:38px}
+.pp-box span{font-size:14px;color:var(--muted)}
+/* شاشة الإنجاز */
+.p-done{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px}
+.done-check{width:112px;height:112px}
+.dc-c{fill:none;stroke:var(--volt);stroke-width:5;stroke-linecap:round;stroke-dasharray:340;stroke-dashoffset:340}
+.dc-k{fill:none;stroke:var(--volt);stroke-width:6.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:80;stroke-dashoffset:80}
+.p-done.go .dc-c{animation:dash .7s .1s ease forwards}
+.p-done.go .dc-k{animation:dash .45s .75s ease forwards}
+@keyframes dash{to{stroke-dashoffset:0}}
+.p-done h2{font:700 36px Changa}
+#done-stats{color:var(--muted);font-size:14px;line-height:1.9;max-width:40ch}
+.done-btns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+
+/* ============ صفحة الإحصائيات ============ */
+.statsview{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;background:var(--bg);
+  opacity:0;transition:opacity .3s ease}
+.statsview.show{opacity:1}
+body.stats-open{overflow:hidden}
+.st-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px clamp(16px,4vw,28px);
+  background:rgba(11,13,8,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);position:relative;z-index:2}
+.st-top h3{font:700 23px Changa}
+.st-top .sub{display:block;font-size:12px;color:var(--faint);margin-top:2px}
+.st-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.st-wrap{max-width:800px;margin:0 auto;padding:26px clamp(16px,4vw,28px) calc(70px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:30px}
+.st-sec{animation:rise .5s cubic-bezier(.22,1,.36,1) both}
+.st-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.st-h h4{font:600 17px Changa}
+.st-h>span{font-size:12px;color:var(--muted)}
+/* شريط الأرقام */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.cell{background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:7px}
+.cell>span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.cell>span .ic{width:14px;height:14px;color:var(--volt)}
+.cell b{font:700 27px/1 Changa;color:var(--text)}
+.cell b i{font-style:normal;font:500 12.5px 'IBM Plex Sans Arabic';color:var(--muted);margin-inline-start:5px}
+/* مخطط الأيام */
+.chart-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 16px 12px}
+.bars{display:flex;align-items:stretch;gap:6px}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+.bval{font:600 12px Changa;color:var(--text);min-height:15px}
+.bcol.empty .bval{color:var(--faint)}
+.bcol.today .bval{color:var(--volt)}
+.btrack{height:132px;width:100%;max-width:38px;display:flex;align-items:flex-end;border-bottom:1px solid var(--line2)}
+.bar{width:100%;border-radius:6px 6px 2px 2px;background:var(--volt);
+  animation:barGrow .7s cubic-bezier(.22,1,.36,1) both;transform-origin:bottom}
+.bcol.empty .bar{background:var(--line)}
+.bcol.today .bar{background:#E9FF8F}
+.bcol.today .blab{color:var(--volt)}
+@keyframes barGrow{from{transform:scaleY(0)}}
+.blab{font-size:10.5px;color:var(--faint);white-space:nowrap}
+/* الجدول الأسبوعي */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.wtable{width:100%;border-collapse:collapse;font-size:13px;min-width:430px}
+.wtable th{font:600 12px 'IBM Plex Sans Arabic';color:var(--faint);text-align:start;padding:13px 14px;
+  border-bottom:1px solid var(--line2);white-space:nowrap}
+.wtable td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.wtable tr:last-child td{border-bottom:0}
+.wtable td:first-child{color:var(--text);font-weight:600;font-size:12.5px}
+.wtable td.num{font:600 14px Changa;color:var(--text)}
+.wtable td.zero{color:var(--faint)}
+.wtable tr.cur td{background:rgba(205,245,84,.05)}
+.wtable tr.cur td:first-child{color:var(--volt)}
+/* سجل الجلسات */
+.hist-date{display:flex;align-items:center;gap:10px;font:600 13.5px Changa;color:var(--text);padding:4px 2px 10px}
+.hist-date span{font:500 11.5px 'IBM Plex Sans Arabic';color:var(--faint)}
+.hist-date::after{content:'';flex:1;height:1px;background:var(--line)}
+.hist-group{margin-bottom:14px}
+.hrow{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);
+  border:1px solid var(--line);border-radius:13px;margin-bottom:7px;transition:border-color .2s}
+.hrow:hover{border-color:var(--line2)}
+.h-main{flex:1;min-width:0}
+.h-main h5{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-main p{font-size:11.5px;color:var(--muted);margin-top:4px}
+.badge{font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.badge.ok{color:var(--volt);border:1px solid rgba(205,245,84,.35)}
+.badge.part{color:var(--amber);border:1px solid rgba(255,194,75,.35)}
+.h-time{font:600 15px Changa;color:var(--text);white-space:nowrap}
+.h-del{opacity:0;transition:opacity .2s}
+.hrow:hover .h-del,.hrow:focus-within .h-del{opacity:1}
+@media(hover:none){.h-del{opacity:1}}
+.st-clear{align-self:center;background:none;border:0;color:var(--faint);font:500 12.5px 'IBM Plex Sans Arabic';
+  cursor:pointer;padding:8px 14px;border-radius:10px;transition:.2s;margin-top:6px}
+.st-clear:hover{color:var(--red);background:rgba(255,110,110,.07)}
+.st-empty{text-align:center;padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.st-empty .e-ic{width:64px;height:64px;color:var(--line2);margin-bottom:8px}
+.st-empty h3{font:700 24px Changa}
+.st-empty p{color:var(--muted);font-size:14px;max-width:44ch;line-height:1.9}
+.st-empty .btn{margin-top:18px}
+
+/* ============ النوافذ ============ */
+.modal-wrap{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:18px;
+  background:rgba(6,8,4,.68);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;transition:opacity .22s}
+.modal-wrap.show{opacity:1}
+.modal{width:min(94vw,470px);max-height:86vh;overflow:auto;background:var(--surface);
+  border:1px solid var(--line2);border-radius:20px;
+  transform:translateY(16px) scale(.97);transition:transform .28s cubic-bezier(.22,1,.36,1)}
+.modal-wrap.show .modal{transform:none}
+.m-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;gap:10px}
+.m-head h3{font:600 20px Changa}
+.m-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:16px}
+.m-foot{display:flex;gap:10px}
+.m-foot .btn{flex:1}
+.m-hr{border:0;border-top:1px solid var(--line)}
+.m-sec{font:600 12.5px 'IBM Plex Sans Arabic';color:var(--faint)}
+.field{display:flex;flex-direction:column;gap:8px}
+.field>label{font-size:13px;font-weight:600;color:var(--muted)}
+.field .dim{color:var(--faint);font-weight:400}
+.inp{background:var(--bg2);border:1px solid var(--line2);color:var(--text);border-radius:12px;
+  padding:11px 14px;font:500 15px 'IBM Plex Sans Arabic';width:100%;transition:border-color .2s,box-shadow .2s}
+.inp:focus{outline:0;border-color:var(--volt);box-shadow:0 0 0 3px rgba(205,245,84,.14)}
+.inp::placeholder{color:var(--faint)}
+.inp.bad{border-color:var(--red)}
+.f-err{color:var(--red);font-size:12.5px}
+.seg{position:relative;display:flex;background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:4px}
+.seg-ind{position:absolute;top:4px;bottom:4px;inset-inline-start:4px;width:calc(50% - 4px);
+  background:var(--volt);border-radius:10px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.seg-btn{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:none;border:0;color:var(--muted);font:600 14px 'IBM Plex Sans Arabic';
+  padding:10px 4px;cursor:pointer;border-radius:10px;transition:color .25s}
+.seg-btn.on{color:var(--ink)}
+.seg-btn .ic{width:15px;height:15px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chipbtn{background:none;border:1px solid var(--line2);color:var(--muted);border-radius:99px;
+  padding:6px 13px;font:500 12.5px 'IBM Plex Sans Arabic';cursor:pointer;transition:.18s}
+.chipbtn:hover{border-color:var(--faint);color:var(--text)}
+.chipbtn.on{border-color:var(--volt);color:var(--volt);background:rgba(205,245,84,.08)}
+.stepper{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line2);border-radius:14px;padding:8px}
+.stepper button{width:44px;height:44px;border-radius:10px;border:0;background:var(--surface2);color:var(--text);
+  display:grid;place-items:center;cursor:pointer;transition:.15s}
+.stepper button:hover{background:var(--line)}
+.stepper button:active{transform:scale(.92)}
+.stepper .ic{width:15px;height:15px}
+.step-val{flex:1;text-align:center}
+.step-val b{font:700 24px/1.2 Changa;display:block}
+.step-val span{font-size:11.5px;color:var(--faint)}
+.swrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:2px 0}
+.swrow .t{font-size:14px;font-weight:500}
+.swrow .d{font-size:12px;color:var(--faint);margin-top:3px;line-height:1.7}
+.sw{position:relative;width:46px;height:26px;flex:none;cursor:pointer}
+.sw input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0;z-index:1}
+.sw i{position:absolute;inset:0;border-radius:99px;background:var(--line2);transition:.25s}
+.sw i::after{content:'';position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;
+  background:var(--muted);transition:.25s}
+.sw input:checked+i{background:var(--volt)}
+.sw input:checked+i::after{transform:translateX(-20px);background:var(--ink)}
+.danger{border:1px solid rgba(255,110,110,.28);border-radius:14px;padding:14px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.c-msg{color:var(--muted);font-size:14px;line-height:1.9}
+
+/* ============ التنبيهات ============ */
+.toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:300;display:flex;
+  flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
+.toast{pointer-events:auto;display:flex;align-items:center;gap:14px;background:#1D2315;border:1px solid var(--line2);
+  color:var(--text);padding:12px 16px;border-radius:13px;font-size:13.5px;box-shadow:0 12px 32px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(14px);transition:.3s cubic-bezier(.22,1,.36,1);max-width:92vw}
+.toast.in{opacity:1;transform:none}
+.toast.out{opacity:0;transform:translateY(8px)}
+.toast-act{background:none;border:0;color:var(--volt);font:600 13.5px 'IBM Plex Sans Arabic';
+  cursor:pointer;padding:4px 8px;border-radius:8px;white-space:nowrap}
+.toast-act:hover{background:rgba(205,245,84,.12)}
+
+/* ============ التجاوب ============ */
+@media(max-width:620px){
+  .sec-head{display:grid;grid-template-columns:auto auto 1fr auto auto;
+    grid-template-areas:"grip idx info tools chev" "play play play play play";row-gap:13px;padding:14px}
+  .sec-grip{grid-area:grip}.sec-index{grid-area:idx;font-size:24px;min-width:32px}
+  .sec-info{grid-area:info}.sec-tools{grid-area:tools}.sec-chev{grid-area:chev;justify-self:end}
+  .btn-play{grid-area:play;width:100%}
+  .p-title h3{font-size:17px;max-width:44vw}
+  .p-controls{gap:14px}.cbtn{width:50px;height:50px}.cbtn.main{width:68px;height:68px}
+  .strip{grid-template-columns:repeat(2,1fr)}
+  .cell b{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
+}
+</style>
+</head>
+<body>
+
+<!-- مكتبة الأيقونات (SVG داخلي) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-play" viewBox="0 0 24 24"><g fill="currentColor" stroke="none"><path d="M16 5.3c0-1-1.1-1.6-2-1.1L3.8 10.3a1.3 1.3 0 0 0 0 2.2L14 18.7c.9.5 2-.1 2-1.1z"/></g></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><g fill="currentColor" stroke="none"><rect x="6" y="4" width="4.2" height="16" rx="1.5"/><rect x="13.8" y="4" width="4.2" height="16" rx="1.5"/></g></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></g></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></g></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></g></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.8l4.8 4.7L19.5 6.5"/></g></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></g></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.2V12l3.2 1.9"/></g></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 8.5A8.2 8.2 0 0 0 5 6.5L3.5 8"/><path d="M3.5 3.5V8H8"/><path d="M4 15.5A8.2 8.2 0 0 0 19 17.5l1.5-1.5"/><path d="M20.5 20.5V16H16"/></g></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.6" r="7.5"/><path d="M12 13.6V9.8M12 6V2.8M10 2.8h4"/></g></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 8.6 8-4.6 8 4.6-8 4.6z"/><path d="m4 13.4 8 4.6 8-4.6"/></g></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.5 6H20M8.5 12H20M8.5 18H20"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.8"/></g></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7.5 7.5v9M16.5 7.5v9M3.5 9.5v5M20.5 9.5v5M7.5 12h9"/></g></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9.5 7V4.8a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7"/><path d="M6.5 7l.7 12.3a1 1 0 0 0 1 .9h7.6a1 1 0 0 0 1-.9L17.5 7"/><path d="M10 11v5.5M14 11v5.5"/></g></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 19.8 3.5 20.5l.7-4.7L16.2 3.8a2 2 0 0 1 2.8 0l1.2 1.2a2 2 0 0 1 0 2.8z"/><path d="m14.9 5.1 4 4"/></g></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><g fill="currentColor" stroke="none"><circle cx="9" cy="5.6" r="1.7"/><circle cx="15" cy="5.6" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="18.4" r="1.7"/><circle cx="15" cy="18.4" r="1.7"/></g></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path fill="currentColor" d="M11.5 4.7 6.8 8.5H3.8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3l4.7 3.8a.8.8 0 0 0 1.3-.6V5.3a.8.8 0 0 0-1.3-.6z"/><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15.3 9.2a4.3 4.3 0 0 1 0 5.6M17.8 6.8a7.6 7.6 0 0 1 0 10.4"/></g></symbol>
+  <symbol id="i-volx" viewBox="0 0 24 24"><path fill="currentColor" d="M11.5 4.7 6.8 8.5H3.8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3l4.7 3.8a.8.8 0 0 0 1.3-.6V5.3a.8.8 0 0 0-1.3-.6z"/><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m16 9.5 5 5M21 9.5l-5 5"/></g></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h8M17.5 6H20M4 12h3M12.5 12H20M4 18h10M18.5 18H20"/><circle cx="14.5" cy="6" r="2.4"/><circle cx="9" cy="12" r="2.4"/><circle cx="16" cy="18" r="2.4"/></g></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v1.9M12 19.3v1.9M2.8 12h1.9M19.3 12h1.9M5.2 5.2l1.3 1.3M17.5 17.5l1.3 1.3M18.8 5.2l-1.3 1.3M6.5 17.5l-1.3 1.3"/></g></symbol>
+  <symbol id="i-skipnext" viewBox="0 0 24 24"><g fill="currentColor" stroke="none"><path d="M19.5 5.4c0-1-1.1-1.6-1.9-1.1L8 10.9a1.3 1.3 0 0 0 0 2.2l9.6 6.6c.8.5 1.9-.1 1.9-1.1z"/><rect x="3.5" y="4.6" width="2.6" height="14.8" rx="1.2"/></g></symbol>
+  <symbol id="i-skipprev" viewBox="0 0 24 24"><g fill="currentColor" stroke="none"><path d="M4.5 5.4c0-1 1.1-1.6 1.9-1.1L16 10.9a1.3 1.3 0 0 1 0 2.2L6.4 19.7c-.8.5-1.9-.1-1.9-1.1z"/><rect x="17.9" y="4.6" width="2.6" height="14.8" rx="1.2"/></g></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.3v5.4M12 16.4v.2"/></g></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 19v-8"/><path d="M12 19V4"/><path d="M19 19v-5"/><path d="M3 19h18"/></g></symbol>
+</svg>
+
+<!-- الرأس -->
+<header class="top">
+  <div class="brand">
+    <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="brand-txt"><h1>إيقاع</h1><span>تمارينك… على إيقاعك</span></div>
+  </div>
+  <div class="top-actions">
+    <button class="btn btn-ghost btn-stats" id="statsBtn"><svg class="ic"><use href="#i-chart"/></svg><span>إحصائياتي</span></button>
+    <button class="icon-btn" id="soundBtn" aria-label="كتم الأصوات"></button>
+    <button class="icon-btn" id="settingsBtn" aria-label="الإعدادات"><svg class="ic"><use href="#i-sliders"/></svg></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- المقدمة -->
+  <section class="intro">
+    <h2>تمارينك، على <em class="hl">إيقاعك<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 60 3, 120 12, 197 6"/></svg></em>.</h2>
+    <p>أنشئ أقساماً كما يحلو لك — إحماء، بطن، جزء علوي… — وأضف إلى كل قسم تمارينه: بالوقت أو بالتكرارات، مع عدد المجموعات ومدة الراحة. ثم اضغط «تشغيل» وقُد جلستك كاملة بمؤقّت، وراحة، وأصوات تقودك خطوة بخطوة.</p>
+    <div class="intro-actions">
+      <button class="btn btn-volt" id="addSectionBtn"><svg class="ic"><use href="#i-plus"/></svg>قسم جديد</button>
+    </div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <!-- قائمة الأقسام -->
+  <div class="sections" id="sections"></div>
+
+  <!-- الحالة الفارغة -->
+  <div class="empty" id="empty" hidden>
+    <svg class="e-ic"><use href="#i-dumbbell"/></svg>
+    <h3>ابدأ ببناء برنامجك</h3>
+    <p>أنشئ قسماً واحداً أو أكثر ثم أضف التمارين — أو جرّب برنامجاً جاهزاً لتلمس الفكرة وتشغيل جلسة فورية.</p>
+    <div class="e-btns">
+      <button class="btn btn-volt" id="e-create"><svg class="ic"><use href="#i-plus"/></svg>إنشاء قسم</button>
+      <button class="btn btn-ghost" id="e-sample"><svg class="ic"><use href="#i-play"/></svg>برنامج تجريبي</button>
+    </div>
+  </div>
+
+  <footer class="foot">إيقاع · بياناتك محفوظة محلياً في متصفحك ولا تغادر جهازك أبداً.</footer>
+</main>
+
+<!-- صفحة الإحصائيات -->
+<div class="statsview" id="statsview" hidden>
+  <div class="st-top">
+    <div>
+      <h3>إحصائياتي</h3>
+      <span class="sub">كل جلسة تُسجَّل تلقائياً — تابع نظامك وتقدّمك</span>
+    </div>
+    <button class="icon-btn" id="stv-close" aria-label="إغلاق"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="st-scroll">
+    <div class="st-wrap">
+      <div class="st-empty" id="stv-empty" hidden>
+        <svg class="e-ic"><use href="#i-chart"/></svg>
+        <h3>لا توجد جلسات بعد</h3>
+        <p>كل جلسة تُنهيها — كاملة أو جزئياً — تُسجَّل هنا تلقائياً: التمارين، المجموعات، الدقائق، ونظرة أسبوعية على نظامك.</p>
+        <button class="btn btn-volt" id="stv-go"><svg class="ic"><use href="#i-play"/></svg>ابدأ جلسة الآن</button>
+      </div>
+      <div id="stv-body" hidden>
+        <div class="strip st-sec" id="stv-strip"></div>
+
+        <section class="chart-box st-sec" style="animation-delay:.07s">
+          <div class="st-h"><h4>إيقاع آخر ٧ أيام</h4><span id="stv-weeksum"></span></div>
+          <div class="bars" id="stv-bars"></div>
+        </section>
+
+        <section class="st-sec" style="animation-delay:.14s">
+          <div class="st-h"><h4>الملخص الأسبوعي</h4><span>الأسبوع يبدأ من السبت</span></div>
+          <div class="tbl-wrap">
+            <table class="wtable">
+              <thead><tr><th>الأسبوع</th><th>الجلسات</th><th>التمارين</th><th>المجموعات</th><th>الدقائق</th></tr></thead>
+              <tbody id="stv-weeks"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="st-sec" style="animation-delay:.21s">
+          <div class="st-h"><h4>سجل الجلسات</h4><span id="stv-count"></span></div>
+          <div id="stv-hist"></div>
+          <button class="st-clear" id="stv-clear">مسح السجل بالكامل</button>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- مشغّل الجلسة -->
+<div class="player" id="player" hidden>
+  <div class="p-top">
+    <div class="p-title"><h3 id="p-sec"></h3><span class="chip" id="p-chip"></span></div>
+    <button class="icon-btn" id="p-close" aria-label="إنهاء الجلسة"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="p-confirm" id="p-confirm" hidden>
+    <span>إنهاء الجلسة الحالية؟</span>
+    <button class="btn btn-ghost sm" id="p-c-no">متابعة التمرين</button>
+    <button class="btn btn-red sm" id="p-c-yes">إنهاء</button>
+  </div>
+  <div class="p-stage">
+    <div class="ringwrap" id="ringwrap">
+      <svg class="ring" viewBox="0 0 260 260" aria-hidden="true">
+        <circle class="ring-track" cx="130" cy="130" r="118"/>
+        <circle class="ring-bar" id="ring-bar" cx="130" cy="130" r="118"/>
+        <g id="ring-head"><circle cx="130" cy="12" r="6.5"/></g>
+      </svg>
+      <div class="ph" id="ph">
+        <div class="ph-label" id="ph-label"></div>
+        <div class="ph-name" id="ph-name"></div>
+        <div class="ph-time" id="ph-time"></div>
+        <div class="ph-sub" id="ph-sub"></div>
+      </div>
+    </div>
+    <div class="p-done" id="p-done" hidden>
+      <svg class="done-check" viewBox="0 0 120 120" aria-hidden="true"><circle class="dc-c" cx="60" cy="60" r="54"/><path class="dc-k" d="M38 62l15 15 30-33"/></svg>
+      <h2>أحسنت!</h2>
+      <p id="done-stats"></p>
+      <div class="done-btns">
+        <button class="btn btn-volt" id="d-again"><svg class="ic"><use href="#i-repeat"/></svg>إعادة الجلسة</button>
+        <button class="btn btn-ghost" id="d-stats"><svg class="ic"><use href="#i-chart"/></svg>الإحصائيات</button>
+        <button class="btn btn-ghost" id="d-close">تم</button>
+      </div>
+    </div>
+  </div>
+  <div class="p-bottom" id="p-bottom">
+    <div class="p-controls">
+      <button class="cbtn" id="c-prev" aria-label="الخطوة السابقة"><svg class="ic"><use href="#i-skipprev"/></svg></button>
+      <button class="cbtn main" id="c-pause" aria-label="إيقاف مؤقت"><svg class="ic"><use href="#i-pause"/></svg></button>
+      <button class="cbtn" id="c-next" aria-label="الخطوة التالية"><svg class="ic"><use href="#i-skipnext"/></svg></button>
+    </div>
+    <div class="p-dots" id="p-dots"></div>
+    <div class="p-hint">المسافة للإيقاف المؤقت · الأسهم للتنقل بين الخطوات</div>
+  </div>
+  <div class="p-paused" id="p-paused" hidden>
+    <div class="pp-box">
+      <div class="pp-c"><svg class="ic"><use href="#i-pause"/></svg></div>
+      <span>إيقاف مؤقت — اضغط في أي مكان للمتابعة</span>
+    </div>
+  </div>
+</div>
+
+<!-- النوافذ المنبثقة -->
+<div class="modal-wrap" id="modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="m-head"><h3 id="m-title"></h3><button class="icon-btn" id="m-close" aria-label="إغلاق"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="m-body" id="m-body"></div>
+  </div>
+</div>
+
+<!-- التنبيهات -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ================= أدوات عامة ================= */
+const $=(s,c=document)=>c.querySelector(s);
+const $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const el=h=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild};
+const uid=()=>Math.random().toString(36).slice(2,10);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clampN=(v,a,z,d)=>{const n=Math.round(+v);return isNaN(n)?d:Math.min(z,Math.max(a,n))};
+/* صيغة الوقت محصّنة ضد أي قيمة غير رقمية */
+const fmt=s=>{s=Math.max(0,Math.round(+s||0));const m=Math.floor(s/60),r=s%60;return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0')};
+function human(sec){sec=Math.round(sec);if(sec<60)return sec+' ث';const m=Math.floor(sec/60),r=sec%60;return r?m+' د '+r+' ث':m+' د'}
+function countAr(n,w){if(n===1)return w[0];if(n===2)return w[1];if(n>=3&&n<=10)return n+' '+w[2];return n+' '+w[3]}
+/* أدوات التاريخ (كل الحسابات بالتوقيت المحلي) */
+const DAY_NAMES=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const DAY_SHORT=['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+function startOfDay(ts){const d=new Date(ts);d.setHours(0,0,0,0);return d.getTime()}
+function addDays(ts,n){const d=new Date(ts);d.setDate(d.getDate()+n);return d.getTime()}
+function dayKey(ts){const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dm(ts){const d=new Date(ts);return d.getDate()+'/'+(d.getMonth()+1)}
+/* بداية الأسبوع = السبت */
+function weekStart(ts){const d=new Date(startOfDay(ts));d.setDate(d.getDate()-((d.getDay()+1)%7));d.setHours(0,0,0,0);return d.getTime()}
+function relDay(ts){
+  const today=dayKey(Date.now());
+  if(today===dayKey(ts))return 'اليوم';
+  if(dayKey(addDays(startOfDay(Date.now()),-1))===dayKey(ts))return 'أمس';
+  return DAY_NAMES[new Date(ts).getDay()];
+}
+
+/* ================= الحالة والتخزين ================= */
+const KEY='iqa3-app-v1';
+const DEFAULTS={rest:30,prepare:5,sound:true,tick:true,voice:true,wake:true,volume:.8};
+const S={sections:[],settings:{...DEFAULTS},openIds:[],logs:[]};
+function save(){localStorage.setItem(KEY,JSON.stringify({sections:S.sections,settings:S.settings,open:S.openIds,logs:S.logs}))}
+function load(){
+  let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  S.sections=(d&&d.sections)||[];
+  S.settings={...DEFAULTS,...((d&&d.settings)||{})};
+  S.openIds=((d&&d.open)||[]).filter(id=>S.sections.some(s=>s.id===id));
+  S.logs=((d&&d.logs)||[]);
+  /* تنظيف وقائي لكل البيانات المحفوظة */
+  S.sections.forEach(sec=>(sec.exercises||[]).forEach(x=>{
+    x.mode=x.mode==='reps'?'reps':'time';
+    x.sets=clampN(x.sets,1,12,2);
+    x.duration=clampN(x.duration,0,3600,0);
+    x.reps=clampN(x.reps,0,999,0);
+    if(x.rest!=null)x.rest=clampN(x.rest,0,600,0);
+  }));
+  S.logs.forEach(l=>{
+    l.ex=clampN(l.ex,0,999,0);l.sets=clampN(l.sets,0,999,0);l.secs=clampN(l.secs,0,86400,0);
+    l.ts=+l.ts||Date.now();l.done=!!l.done;l.name=String(l.name||'جلسة');
+  });
+}
+const byId=id=>S.sections.find(s=>s.id===id);
+
+/* برنامج تجريبي للبداية السريعة */
+const SAMPLE=[
+ {name:'إحماء',exercises:[
+  {name:'إمالة الرقبة جانبياً',mode:'time',duration:20,sets:1,reps:0,rest:null},
+  {name:'دوران الذراعين',mode:'time',duration:20,sets:1,reps:0,rest:null},
+  {name:'فتح الصدر',mode:'time',duration:20,sets:1,reps:0,rest:10},
+  {name:'قفز خفيف في المكان',mode:'time',duration:30,sets:1,reps:0,rest:null}]},
+ {name:'بطن',exercises:[
+  {name:'كرنش',mode:'reps',duration:0,sets:3,reps:15,rest:null},
+  {name:'بلانك',mode:'time',duration:30,sets:3,reps:0,rest:20},
+  {name:'رفع الأرجل مستلقياً',mode:'reps',duration:0,sets:3,reps:12,rest:null},
+  {name:'دراجة هوائية',mode:'reps',duration:0,sets:2,reps:20,rest:null}]},
+ {name:'الجزء العلوي',exercises:[
+  {name:'ضغط الصدر',mode:'reps',duration:0,sets:3,reps:12,rest:null},
+  {name:'وضع الثبات المائل',mode:'time',duration:20,sets:2,reps:0,rest:null},
+  {name:'غطس باستخدام الكرسي',mode:'reps',duration:0,sets:3,reps:10,rest:null}]}
+];
+
+/* ================= الصوت (Web Audio) ================= */
+const Sfx={
+  ctx:null,g:null,
+  ensure(){
+    if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+      this.ctx=new AC();this.g=this.ctx.createGain();this.g.connect(this.ctx.destination);this.setVol();}
+    if(this.ctx.state==='suspended')this.ctx.resume();
+  },
+  setVol(){if(this.g)this.g.gain.value=S.settings.sound?Math.pow(S.settings.volume,1.5):0},
+  tone(f,{d=.08,type='sine',v=.4,at=0,slide=0}={}){
+    if(!S.settings.sound)return;this.ensure();if(!this.ctx)return;
+    const t=this.ctx.currentTime+at,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+    o.type=type;o.frequency.setValueAtTime(f,t);
+    if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g);g.connect(this.g);o.start(t);o.stop(t+d+.06);
+  },
+  tock(alt){this.tone(alt?1568:1046,{d:.045,v:.15,type:'square'})},   /* تك / توك */
+  beep3(){this.tone(1175,{d:.09,v:.42})},                              /* آخر ٣ ثوانٍ */
+  go(){this.tone(1319,{d:.16,v:.45});this.tone(1976,{d:.2,v:.32,at:.02})},
+  done(){this.tone(880,{d:.09,v:.4});this.tone(1109,{d:.09,v:.4,at:.09});this.tone(1319,{d:.18,v:.42,at:.18})},
+  rest(){this.tone(740,{d:.1,v:.35});this.tone(554,{d:.16,v:.3,at:.1})},
+  prepare(){this.tone(880,{d:.07,v:.35})},
+  click(){this.tone(1900,{d:.03,v:.09})},
+  error(){this.tone(233,{d:.13,v:.3,type:'triangle'})},
+  fanfare(){[523,659,784,1047].forEach((f,i)=>this.tone(f,{d:.16,v:.4,at:i*.12}));this.tone(1319,{d:.5,v:.28,at:.48})}
+};
+/* الإعلان الصوتي (نطق عربي إن توفر في المتصفح) */
+function announce(text){
+  if(!S.settings.voice||!('speechSynthesis' in window))return;
+  try{
+    const u=new SpeechSynthesisUtterance(text);u.lang='ar';u.rate=1.05;
+    const v=speechSynthesis.getVoices().find(v=>/^ar/i.test(v.lang));if(v)u.voice=v;
+    speechSynthesis.cancel();speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ================= التنبيهات (Toast) ================= */
+function toast(msg,action){
+  const t=el(`<div class="toast"><span>${msg}</span>${action?`<button class="toast-act">${esc(action.label)}</button>`:''}</div>`);
+  $('#toasts').appendChild(t);
+  const dismiss=()=>{t.classList.remove('in');t.classList.add('out');setTimeout(()=>t.remove(),320)};
+  if(action)t.querySelector('.toast-act').onclick=()=>{action.fn();dismiss()};
+  requestAnimationFrame(()=>t.classList.add('in'));
+  setTimeout(dismiss,4200);
+}
+
+/* ================= النوافذ ================= */
+const modalBack=$('#modal');
+function openModal(title,bodyHTML){
+  $('#m-title').textContent=title;
+  const body=$('#m-body');body.innerHTML=bodyHTML;body.classList.remove('m-body');body.classList.add('m-body');
+  modalBack.hidden=false;requestAnimationFrame(()=>modalBack.classList.add('show'));
+  const f=body.querySelector('input');if(f)setTimeout(()=>{f.focus();f.select&&f.select()},80);
+  Sfx.click();return body;
+}
+function closeModal(){
+  modalBack.classList.remove('show');
+  setTimeout(()=>{modalBack.hidden=true;$('#m-body').innerHTML=''},230);
+}
+modalBack.addEventListener('click',e=>{if(e.target===modalBack)closeModal()});
+ $('#m-close').onclick=closeModal;
+/* إزالة رسالة الخطأ عند الكتابة */
+document.addEventListener('input',e=>{
+  const t=e.target;if(!t.classList||!t.classList.contains('inp'))return;
+  t.classList.remove('bad');const f=t.closest('.field');const err=f&&f.querySelector('.f-err');if(err)err.textContent='';
+});
+function fieldError(input,msg){
+  const f=input.closest('.field');let e=f.querySelector('.f-err');
+  if(!e){e=el('<div class="f-err"></div>');f.appendChild(e)}
+  e.textContent=msg;input.classList.add('bad');input.focus();Sfx.error();
+}
+/* رقائق القيم السريعة */
+function wireChips(scope){
+  $$('.chips',scope).forEach(ch=>{
+    const inp=()=>scope.querySelector('#'+ch.dataset.for);if(!inp())return;
+    const sync=()=>[...ch.children].forEach(c=>c.classList.toggle('on',c.dataset.v==inp().value));
+    ch.addEventListener('click',e=>{
+      const c=e.target.closest('.chipbtn');if(!c)return;
+      inp().value=c.dataset.v;sync();Sfx.click();
+      inp().dispatchEvent(new Event('input',{bubbles:true}));
+      inp().dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    inp().addEventListener('input',sync);sync();
+  });
+}
+
+/* نافذة القسم */
+function openSectionModal(sec){
+  const b=openModal(sec?'تعديل القسم':'قسم جديد',`
+    <div class="field"><label>اسم القسم</label>
+      <input id="s-name" class="inp" maxlength="30" placeholder="مثال: إحماء، بطن، الجزء العلوي…" value="${esc(sec?sec.name:'')}"></div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" id="s-cancel">إلغاء</button>
+      <button class="btn btn-volt btn-primary" id="s-save">${sec?'حفظ التعديل':'إنشاء القسم'}</button>
+    </div>`);
+  $('#s-cancel',b).onclick=closeModal;
+  $('#s-save',b).onclick=()=>{
+    const name=$('#s-name',b).value.trim();
+    if(!name)return fieldError($('#s-name',b),'اكتب اسم القسم أولاً');
+    if(sec){sec.name=name;save();render();toast('تم حفظ التعديل')}
+    else{
+      const ns={id:uid(),name,exercises:[]};
+      S.sections.push(ns);S.openIds.push(ns.id);save();render();
+      toast('تم إنشاء القسم — أضف أول تمرين الآن');
+      openExerciseModal(ns);return;
+    }
+    closeModal();
+  };
+}
+
+/* نافذة التمرين */
+function openExerciseModal(sec,ex){
+  const isEdit=!!ex,mode=ex?ex.mode:'time';
+  const b=openModal(isEdit?'تعديل التمرين':'تمرين جديد — '+sec.name,`
+    <div class="field"><label>اسم التمرين</label>
+      <input id="x-name" class="inp" maxlength="40" placeholder="مثال: بلانك، كرنش، قفز بالحبل…" value="${esc(ex?ex.name:'')}"></div>
+    <div class="field"><label>نوع التمرين</label>
+      <div class="seg" id="x-type"><span class="seg-ind"></span>
+        <button type="button" class="seg-btn" data-v="time"><svg class="ic"><use href="#i-clock"/></svg>بالوقت</button>
+        <button type="button" class="seg-btn" data-v="reps"><svg class="ic"><use href="#i-repeat"/></svg>بالتكرار</button>
+      </div></div>
+    <div class="field" id="x-w-time"><label>المدة الزمنية <span class="dim">— بالثواني</span></label>
+      <input id="x-dur" type="number" class="inp" min="5" max="3600" step="5" value="${ex&&ex.mode==='time'?ex.duration:30}">
+      <div class="chips" data-for="x-dur">${[15,30,45,60,90,120].map(v=>`<button type="button" class="chipbtn" data-v="${v}">${v} ث</button>`).join('')}</div></div>
+    <div class="field" id="x-w-reps" hidden><label>عدد التكرارات</label>
+      <input id="x-reps" type="number" class="inp" min="1" max="999" value="${ex&&ex.mode==='reps'?ex.reps:12}">
+      <div class="chips" data-for="x-reps">${[8,10,12,15,20,25].map(v=>`<button type="button" class="chipbtn" data-v="${v}">×${v}</button>`).join('')}</div></div>
+    <div class="field"><label>عدد المجموعات</label>
+      <div class="stepper">
+        <button type="button" id="x-m" aria-label="إنقاص"><svg class="ic"><use href="#i-minus"/></svg></button>
+        <div class="step-val"><b id="x-sets-v">${ex?ex.sets:2}</b><span>مجموعة</span></div>
+        <button type="button" id="x-p" aria-label="زيادة"><svg class="ic"><use href="#i-plus"/></svg></button>
+      </div></div>
+    <div class="field"><label>راحة خاصة بعد هذا التمرين <span class="dim">— بالثواني، اتركه فارغاً لاستخدام الافتراضي (${S.settings.rest} ث)</span></label>
+      <input id="x-rest" type="number" class="inp" min="0" max="600" placeholder="افتراضي" value="${ex&&ex.rest!=null?ex.rest:''}"></div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" id="x-cancel">إلغاء</button>
+      <button class="btn btn-volt btn-primary" id="x-save">${isEdit?'حفظ التعديل':'إضافة التمرين'}</button>
+    </div>`);
+  let type=mode,sets=ex?ex.sets:2;
+  const ind=$('.seg-ind',b),btns=$$('.seg-btn',b),wt=$('#x-w-time',b),wr=$('#x-w-reps',b);
+  const setType=m=>{type=m;ind.style.transform=m==='reps'?'translateX(-100%)':'translateX(0)';
+    btns.forEach(x=>x.classList.toggle('on',x.dataset.v===m));wt.hidden=m==='reps';wr.hidden=m!=='reps'};
+  btns.forEach(x=>x.onclick=()=>{setType(x.dataset.v);Sfx.click()});
+  setType(mode);wireChips(b);
+  $('#x-m',b).onclick=()=>{sets=Math.max(1,sets-1);$('#x-sets-v',b).textContent=sets;Sfx.click()};
+  $('#x-p',b).onclick=()=>{sets=Math.min(12,sets+1);$('#x-sets-v',b).textContent=sets;Sfx.click()};
+  $('#x-cancel',b).onclick=closeModal;
+  $('#x-save',b).onclick=()=>{
+    const name=$('#x-name',b).value.trim();
+    if(!name)return fieldError($('#x-name',b),'اكتب اسم التمرين');
+    const dur=clampN($('#x-dur',b).value,5,3600,30),reps=clampN($('#x-reps',b).value,1,999,12);
+    if(type==='time'&&$('#x-dur',b).value!==''&&dur<5)return fieldError($('#x-dur',b),'أدخل مدة لا تقل عن ٥ ثوانٍ');
+    if(type==='reps'&&$('#x-reps',b).value!==''&&reps<1)return fieldError($('#x-reps',b),'أدخل عدداً صحيحاً للتكرارات');
+    const data={id:ex?ex.id:uid(),name,mode:type,sets,
+      duration:type==='time'?dur:0,reps:type==='reps'?reps:0,
+      rest:$('#x-rest',b).value===''?null:clampN($('#x-rest',b).value,0,600,S.settings.rest)};
+    if(ex)Object.assign(ex,data);else sec.exercises.push(data);
+    if(!S.openIds.includes(sec.id))S.openIds.push(sec.id);
+    save();render();closeModal();
+    toast(ex?'تم حفظ التعديل':'تمت إضافة «'+esc(name)+'»');
+  };
+}
+
+/* نافذة الإعدادات */
+function openSettings(){
+  const st=S.settings;
+  const b=openModal('الإعدادات',`
+    <div class="m-sec">الجلسة</div>
+    <div class="field"><label>مدة الراحة الافتراضية <span class="dim">— بالثواني</span></label>
+      <input id="st-rest" type="number" class="inp" min="0" max="600" value="${st.rest}">
+      <div class="chips" data-for="st-rest">${[10,15,30,45,60].map(v=>`<button type="button" class="chipbtn" data-v="${v}">${v} ث</button>`).join('')}</div></div>
+    <div class="field"><label>العد التنازلي قبل البدء <span class="dim">— بالثواني، ٠ يعني بدون</span></label>
+      <input id="st-prep" type="number" class="inp" min="0" max="10" value="${st.prepare}">
+      <div class="chips" data-for="st-prep">${[0,3,5,10].map(v=>`<button type="button" class="chipbtn" data-v="${v}">${v===0?'بدون':v+' ث'}</button>`).join('')}</div></div>
+    <hr class="m-hr">
+    <div class="m-sec">الصوت</div>
+    <div class="swrow"><div><div class="t">الأصوات</div><div class="d">تكّات وتنبيهات الجلسة كاملة</div></div>
+      <label class="sw"><input type="checkbox" id="st-sound" ${st.sound?'checked':''}><i></i></label></div>
+    <div class="swrow"><div><div class="t">تكّة كل ثانية</div><div class="d">صوت المؤقّت أثناء العدّ التنازلي</div></div>
+      <label class="sw"><input type="checkbox" id="st-tick" ${st.tick?'checked':''}><i></i></label></div>
+    <div class="swrow"><div><div class="t">الإعلان الصوتي</div><div class="d">ينطق اسم التمرين التالي — إن توفر صوت عربي في متصفحك</div></div>
+      <label class="sw"><input type="checkbox" id="st-voice" ${st.voice?'checked':''}><i></i></label></div>
+    <div class="field"><label>مستوى الصوت</label><input id="st-vol" type="range" min="0" max="100" value="${Math.round(st.volume*100)}"></div>
+    <hr class="m-hr">
+    <div class="m-sec">أخرى</div>
+    <div class="swrow"><div><div class="t">إبقاء الشاشة مضاءة</div><div class="d">أثناء جلسة التمرين فقط</div></div>
+      <label class="sw"><input type="checkbox" id="st-wake" ${st.wake?'checked':''}><i></i></label></div>
+    <div class="danger">
+      <div><div class="t" style="font-size:14px;font-weight:600">حذف جميع البيانات</div>
+      <div class="d" style="font-size:12px;color:var(--faint);margin-top:3px">يمسح كل الأقسام والتمارين وسجل الإحصائيات نهائياً</div></div>
+      <button class="btn btn-red sm" id="st-wipe">حذف</button>
+    </div>`);
+  wireChips(b);
+  $('#st-rest',b).addEventListener('change',e=>{S.settings.rest=clampN(e.target.value,0,600,30);save()});
+  $('#st-prep',b).addEventListener('change',e=>{S.settings.prepare=clampN(e.target.value,0,10,5);save()});
+  $('#st-sound',b).addEventListener('change',e=>{S.settings.sound=e.target.checked;save();Sfx.setVol();syncSoundIcon()});
+  $('#st-tick',b).addEventListener('change',e=>{S.settings.tick=e.target.checked;save()});
+  $('#st-voice',b).addEventListener('change',e=>{S.settings.voice=e.target.checked;save()});
+  $('#st-wake',b).addEventListener('change',e=>{S.settings.wake=e.target.checked;save()});
+  const vol=$('#st-vol',b);
+  vol.addEventListener('input',()=>{S.settings.volume=vol.value/100;Sfx.setVol();save()});
+  vol.addEventListener('change',()=>Sfx.done());
+  $('#st-wipe',b).onclick=()=>{closeModal();
+    confirmModal('حذف جميع البيانات؟','سيتم مسح كل الأقسام والتمارين وسجل الإحصائيات نهائياً ولا يمكن التراجع.','حذف الكل',
+      ()=>{S.sections=[];S.openIds=[];S.logs=[];save();render();toast('تم حذف جميع البيانات')})};
+}
+function confirmModal(title,msg,okText,onOk){
+  const b=openModal(title,`<p class="c-msg">${msg}</p>
+    <div class="m-foot"><button class="btn btn-ghost" id="cf-no">إلغاء</button>
+    <button class="btn btn-red btn-primary" id="cf-yes">${okText}</button></div>`);
+  $('#cf-no',b).onclick=closeModal;
+  $('#cf-yes',b).onclick=()=>{closeModal();onOk()};
+}
+
+/* ================= بناء الواجهة ================= */
+const sectionsEl=$('#sections'),emptyEl=$('#empty'),statsEl=$('#stats');
+function exMeta(x){
+  return (x.mode==='time'?x.duration+' ثانية':'×'+x.reps+' تكرار')+(x.sets>1?' · '+x.sets+' مجموعات':'');
+}
+function buildSteps(sec){
+  const st=[],cfg=S.settings;
+  if(cfg.prepare>0&&sec.exercises.length)
+    st.push({t:'prepare',sec:cfg.prepare,ei:0,exName:sec.exercises[0].name,meta:sec.exercises[0]});
+  sec.exercises.forEach((ex,ei)=>{
+    const rest=ex.rest!=null?ex.rest:cfg.rest;
+    for(let set=1;set<=ex.sets;set++){
+      st.push({t:'ex',ex,ei,set,totalSets:ex.sets,
+               sec:ex.mode==='time'?Math.max(5,+ex.duration||30):0});
+      const last=ei===sec.exercises.length-1&&set===ex.sets;
+      if(!last&&rest>0)st.push({t:'rest',sec:rest,ei});
+    }
+  });
+  return st;
+}
+function sectionSeconds(sec){
+  return buildSteps(sec).reduce((a,s)=>a+(s.t==='ex'?(s.ex.mode==='time'?s.ex.duration:s.ex.reps*3):s.sec),0);
+}
+function exRow(ex){
+  const typeTag=ex.mode==='time'
+    ?`<span class="tag t-time"><svg class="ic"><use href="#i-clock"/></svg>${ex.duration} ثانية</span>`
+    :`<span class="tag t-reps"><svg class="ic"><use href="#i-repeat"/></svg>×${ex.reps} تكرار</span>`;
+  const setsTag=ex.sets>1?`<span class="tag"><svg class="ic"><use href="#i-layers"/></svg>${ex.sets} مجموعات</span>`:'';
+  const restTag=ex.rest!=null?`<span class="tag t-rest"><svg class="ic"><use href="#i-timer"/></svg>راحة ${ex.rest} ث</span>`:'';
+  return `<div class="ex" data-id="${ex.id}">
+    <span class="grip ex-grip" title="اسحب لإعادة الترتيب"><svg class="ic"><use href="#i-grip"/></svg></span>
+    <div class="ex-main"><h4>${esc(ex.name)}</h4><div class="ex-tags">${typeTag}${setsTag}${restTag}</div></div>
+    <div class="ex-actions">
+      <button class="icon-btn sm" data-act="editex" aria-label="تعديل التمرين"><svg class="ic"><use href="#i-pencil"/></svg></button>
+      <button class="icon-btn sm" data-act="delex" aria-label="حذف التمرين"><svg class="ic"><use href="#i-trash"/></svg></button>
+    </div></div>`;
+}
+function secPanel(sec,i){
+  const n=sec.exercises.length;
+  const meta=n?countAr(n,['تمرين واحد','تمرينان','تمارين','تمريناً'])+' · ≈ '+human(sectionSeconds(sec)):'لا تمارين بعد — أضف تمريناً للبدء';
+  return `<article class="sec${S.openIds.includes(sec.id)?' open':''}" data-id="${sec.id}" style="animation-delay:${i*70}ms">
+    <header class="sec-head">
+      <span class="grip sec-grip" title="اسحب لإعادة ترتيب الأقسام"><svg class="ic"><use href="#i-grip"/></svg></span>
+      <span class="sec-index">${String(i+1).padStart(2,'0')}</span>
+      <div class="sec-info"><h3>${esc(sec.name)}</h3><p>${meta}</p></div>
+      <button class="btn btn-volt btn-play" data-act="play" ${n?'':'disabled title="أضف تمارين أولاً"'}><svg class="ic"><use href="#i-play"/></svg>تشغيل</button>
+      <div class="sec-tools">
+        <button class="icon-btn sm" data-act="editsec" aria-label="تعديل القسم"><svg class="ic"><use href="#i-pencil"/></svg></button>
+        <button class="icon-btn sm" data-act="delsec" aria-label="حذف القسم"><svg class="ic"><use href="#i-trash"/></svg></button>
+      </div>
+      <svg class="ic sec-chev" data-act="toggle" aria-hidden="true"><use href="#i-chev"/></svg>
+    </header>
+    <div class="sec-body"><div class="sec-clip"><div class="sec-inner">
+      <div class="ex-list">${sec.exercises.map(exRow).join('')}</div>
+      <button class="add-ex" data-act="addex"><svg class="ic"><use href="#i-plus"/></svg>إضافة تمرين</button>
+    </div></div></div>
+  </article>`;
+}
+function renderStats(){
+  const secs=S.sections;
+  if(!secs.length){statsEl.innerHTML='';return}
+  const exs=secs.reduce((a,s)=>a+s.exercises.length,0);
+  const total=secs.reduce((a,s)=>a+sectionSeconds(s),0);
+  let timeHtml='';
+  if(total>0){const m=Math.max(1,Math.round(total/60));
+    timeHtml=`<span class="stat"><svg class="ic"><use href="#i-timer"/></svg>≈ ${countAr(m,['دقيقة واحدة','دقيقتان','دقائق','دقيقة'])}</span>`}
+  /* رابط سريع لسجل الأداء إن وُجدت جلسات منجزة */
+  let perfHtml='';
+  if(S.logs.length){
+    const min=Math.round(S.logs.reduce((a,l)=>a+l.secs,0)/60);
+    perfHtml=`<button class="stat stat-btn" type="button"><svg class="ic"><use href="#i-chart"/></svg>${countAr(S.logs.length,['جلسة منجزة','جلستان منجزتان','جلسات منجزة','جلسة منجزة'])}${min?' · ≈ '+min+' دقيقة':''}</button>`;
+  }
+  statsEl.innerHTML=
+    `<span class="stat"><svg class="ic"><use href="#i-list"/></svg>${countAr(secs.length,['قسم واحد','قسمان','أقسام','قسماً'])}</span>
+     <span class="stat"><svg class="ic"><use href="#i-dumbbell"/></svg>${countAr(exs,['تمرين واحد','تمرينان','تمارين','تمريناً'])}</span>${timeHtml}${perfHtml}`;
+  const sb=statsEl.querySelector('.stat-btn');if(sb)sb.onclick=openStats;
+}
+function render(){
+  renderStats();
+  sectionsEl.innerHTML=S.sections.map(secPanel).join('');
+  sectionsEl.hidden=!S.sections.length;
+  emptyEl.hidden=!!S.sections.length;
+}
+function toggleSec(id,forceOpen){
+  const n=sectionsEl.querySelector(`.sec[data-id="${id}"]`);if(!n)return;
+  const open=n.classList.contains('open');
+  const want=forceOpen?true:!open;
+  if(want===open){if(forceOpen&&!S.openIds.includes(id)){S.openIds.push(id);save()}return}
+  n.classList.toggle('open',want);
+  if(want)S.openIds.push(id);else S.openIds=S.openIds.filter(x=>x!==id);
+  save();
+}
+function deleteSection(sec){
+  const idx=S.sections.indexOf(sec);
+  S.sections.splice(idx,1);S.openIds=S.openIds.filter(x=>x!==sec.id);save();render();
+  toast('تم حذف قسم «'+esc(sec.name)+'»',{label:'تراجع',fn:()=>{S.sections.splice(idx,0,sec);save();render()}});
+}
+function deleteExercise(sec,exId){
+  const ex=sec.exercises.find(x=>x.id===exId);if(!ex)return;
+  const idx=sec.exercises.indexOf(ex);
+  sec.exercises.splice(idx,1);save();render();
+  toast('تم حذف «'+esc(ex.name)+'»',{label:'تراجع',fn:()=>{sec.exercises.splice(idx,0,ex);save();render()}});
+}
+
+/* تفويض النقر داخل قائمة الأقسام */
+sectionsEl.addEventListener('click',e=>{
+  const secEl=e.target.closest('.sec');if(!secEl)return;
+  const sec=byId(secEl.dataset.id);if(!sec)return;
+  const actEl=e.target.closest('[data-act]');
+  if(actEl){
+    const act=actEl.dataset.act;
+    if(act==='play')startPlayer(sec);
+    else if(act==='toggle')toggleSec(sec.id);
+    else if(act==='addex'){toggleSec(sec.id,true);openExerciseModal(sec)}
+    else if(act==='editsec')openSectionModal(sec);
+    else if(act==='delsec')deleteSection(sec);
+    else if(act==='editex'){const ex=sec.exercises.find(x=>x.id===(e.target.closest('.ex')||{}).dataset.id);if(ex)openExerciseModal(sec,ex)}
+    else if(act==='delex')deleteExercise(sec,(e.target.closest('.ex')||{}).dataset.id);
+    return;
+  }
+  if(e.target.closest('.grip'))return;
+  const exEl=e.target.closest('.ex');
+  if(exEl){const ex=sec.exercises.find(x=>x.id===exEl.dataset.id);if(ex)openExerciseModal(sec,ex);return}
+  if(e.target.closest('.sec-head'))toggleSec(sec.id);
+});
+
+/* ================= السحب لإعادة الترتيب ================= */
+function makeSortable(container,{item,handle,list,onMove}){
+  container.addEventListener('pointerdown',e=>{
+    const h=e.target.closest(handle);if(!h)return;
+    const it=h.closest(item);if(!it||!container.contains(it))return;
+    const scope=list?it.closest(list):container;
+    const items=[...scope.querySelectorAll(':scope > '+item)];
+    const rects=items.map(n=>n.getBoundingClientRect());
+    const from=items.indexOf(it);if(from<0)return;
+    let d={it,items,rects,from,to:from,startY:e.clientY,h:it.offsetHeight,active:false};
+    e.preventDefault();
+    const mv=ev=>{
+      const dy=ev.clientY-d.startY;
+      if(!d.active){
+        if(Math.abs(dy)<7)return;
+        d.active=true;d.it.classList.add('dragging');
+        d.items.forEach(n=>{if(n!==d.it)n.style.transition='transform .16s ease'});
+        document.body.classList.add('dragging-any');
+      }
+      ev.preventDefault();
+      d.it.style.transform=`translateY(${dy}px)`;
+      let cnt=0;
+      d.items.forEach((n,k)=>{if(k===d.from)return;const r=d.rects[k];if(ev.clientY>r.top+r.height/2)cnt++});
+      const to=cnt<=d.from?cnt:cnt+1;d.to=to;
+      d.items.forEach((n,k)=>{
+        if(n===d.it)return;let sh=0;
+        if(d.from<to){if(k>d.from&&k<=to)sh=-d.h}
+        else if(to<d.from){if(k>=to&&k<d.from)sh=d.h}
+        n.style.transform=sh?`translateY(${sh}px)`:'';
+      });
+    };
+    const up=()=>{
+      h.removeEventListener('pointermove',mv);
+      h.removeEventListener('pointerup',up);
+      h.removeEventListener('pointercancel',up);
+      if(d.active){
+        const{from,to}=d;
+        d.items.forEach(n=>{n.style.transform='';n.style.transition='';n.classList.remove('dragging')});
+        document.body.classList.remove('dragging-any');
+        if(from!==to)onMove(from,to);
+      }
+      d=null;
+    };
+    h.addEventListener('pointermove',mv);
+    h.addEventListener('pointerup',up);
+    h.addEventListener('pointercancel',up);
+  });
+}
+makeSortable(sectionsEl,{item:'.sec',handle:'.sec-grip',list:null,onMove:(f,t)=>{
+  const[m]=S.sections.splice(f,1);S.sections.splice(t,0,m);save();render();
+  const n=sectionsEl.children[t];if(n){n.classList.add('flash');setTimeout(()=>n.classList.remove('flash'),1000)}
+}});
+makeSortable(sectionsEl,{item:'.ex',handle:'.ex-grip',list:'.ex-list',onMove:(f,t,it)=>{
+  const sec=byId(it.closest('.sec').dataset.id);if(!sec)return;
+  const[m]=sec.exercises.splice(f,1);sec.exercises.splice(t,0,m);save();render();
+  const n=sectionsEl.querySelector(`.sec[data-id="${sec.id}"] .ex-list`).children[t];
+  if(n){n.classList.add('flash');setTimeout(()=>n.classList.remove('flash'),1000)}
+}});
+
+/* ================= إبقاء الشاشة مضاءة ================= */
+let wakeLock=null;
+async function lockScreen(){if(!S.settings.wake)return;try{wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
+function unlockScreen(){try{wakeLock&&wakeLock.release()}catch(e){}wakeLock=null}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&P.active&&S.settings.wake&&!wakeLock)lockScreen();
+});
+
+/* ================= تسجيل الجلسات في السجل ================= */
+function logSession(){
+  const doneSteps=P.steps.filter((s,j)=>j<P.i&&s.t==='ex');
+  if(!doneSteps.length)return; /* لم يُنجز أي تمرين — لا تسجيل */
+  const exIds=new Set(doneSteps.map(s=>s.ex.id||s.ex.name));
+  S.logs.push({id:uid(),ts:Date.now(),name:P.sec.name,ex:exIds.size,sets:doneSteps.length,
+    secs:Math.max(1,Math.round(P.activeMs/1000)),done:P.done});
+  save();
+}
+
+/* ================= صفحة الإحصائيات ================= */
+const statsviewEl=$('#statsview');
+function openStats(){
+  renderStatsView();
+  statsviewEl.hidden=false;
+  requestAnimationFrame(()=>statsviewEl.classList.add('show'));
+  document.body.classList.add('stats-open');
+  statsviewEl.querySelector('.st-scroll').scrollTop=0;
+  Sfx.click();
+}
+function closeStats(){
+  statsviewEl.classList.remove('show');
+  document.body.classList.remove('stats-open');
+  setTimeout(()=>{statsviewEl.hidden=true},300);
+}
+function renderStatsView(){
+  const logs=S.logs.slice().sort((a,b)=>b.ts-a.ts);
+  const emptyS=$('#stv-empty'),bodyS=$('#stv-body');
+  if(!logs.length){emptyS.hidden=false;bodyS.hidden=true;return}
+  emptyS.hidden=true;bodyS.hidden=false;
+
+  /* ١) شريط الأرقام الإجمالية */
+  const tot={s:logs.length,ex:logs.reduce((a,l)=>a+l.ex,0),sets:logs.reduce((a,l)=>a+l.sets,0),
+    secs:logs.reduce((a,l)=>a+l.secs,0)};
+  const days=new Set(logs.map(l=>dayKey(l.ts)));
+  let streak=0,cur=startOfDay(Date.now());
+  if(!days.has(dayKey(cur)))cur=addDays(cur,-1); /* إن لم يتمرّن اليوم، تُحسب السلسلة من الأمس */
+  while(days.has(dayKey(cur))){streak++;cur=addDays(cur,-1)}
+  const dur=tot.secs<60?{n:tot.secs,u:'ثانية'}:{n:Math.round(tot.secs/60),u:'دقيقة'};
+  $('#stv-strip').innerHTML=`
+    <div class="cell"><span><svg class="ic"><use href="#i-play"/></svg>جلسات</span><b>${tot.s}</b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-dumbbell"/></svg>تمارين منجزة</span><b>${tot.ex}</b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-layers"/></svg>مجموعات</span><b>${tot.sets}</b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-timer"/></svg>زمن نشط</span><b>${dur.n}<i>${dur.u}</i></b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-sun"/></svg>أيام متتالية</span><b>${streak}<i>يوم</i></b></div>`;
+
+  /* ٢) مخطط آخر ٧ أيام */
+  const t0=startOfDay(Date.now());let maxMin=0;
+  const dayData=[];
+  for(let i=6;i>=0;i--){
+    const ts=addDays(t0,-i),k=dayKey(ts);
+    const ds=logs.filter(l=>dayKey(l.ts)===k);
+    const secs=ds.reduce((a,l)=>a+l.secs,0),min=Math.round(secs/60);
+    dayData.push({ts,secs,min,sessions:ds.length,ex:ds.reduce((a,l)=>a+l.ex,0),today:i===0});
+    if(min>maxMin)maxMin=min;
+  }
+  const wSess=dayData.reduce((a,d)=>a+d.sessions,0),wMin=dayData.reduce((a,d)=>a+d.min,0);
+  $('#stv-weeksum').textContent=`${wSess} جلسة · ${wMin} دقيقة`;
+  $('#stv-bars').innerHTML=dayData.map((d,idx)=>{
+    const h=maxMin?Math.max(6,Math.round(d.min/maxMin*100)):0;
+    const name=DAY_NAMES[new Date(d.ts).getDay()];
+    const info=`${name} ${dm(d.ts)} — ${d.sessions?d.sessions+' جلسة · '+d.ex+' تمرين · '+d.min+' دقيقة':'لا نشاط'}`;
+    return `<div class="bcol${d.today?' today':''}${d.min?'':' empty'}" title="${info}">
+      <span class="bval">${d.min>0?d.min:''}</span>
+      <div class="btrack"><div class="bar" style="height:${d.min?h:4}%;animation-delay:${idx*70}ms"></div></div>
+      <span class="blab">${d.today?'اليوم':DAY_SHORT[new Date(d.ts).getDay()]}</span>
+    </div>`;
+  }).join('');
+
+  /* ٣) الجدول الأسبوعي (أسبوع يبدأ من السبت) */
+  const firstTs=Math.min(...logs.map(l=>l.ts));
+  const curWs=weekStart(Date.now());
+  const weeksArr=[];let ws=weekStart(firstTs);
+  while(ws<=curWs&&weeksArr.length<60){weeksArr.push(ws);ws=addDays(ws,7)}
+  const weeks=weeksArr.slice(-12).reverse();
+  const cell=v=>v?`<td class="num">${v}</td>`:'<td class="zero">—</td>';
+  $('#stv-weeks').innerHTML=weeks.map(w=>{
+    const wl=logs.filter(l=>weekStart(l.ts)===w);
+    const mins=Math.round(wl.reduce((a,l)=>a+l.secs,0)/60);
+    const isCur=w===curWs;
+    return `<tr${isCur?' class="cur"':''}>
+      <td>${isCur?'الأسبوع الحالي':dm(w)+' – '+dm(addDays(w,6))}</td>
+      ${cell(wl.length)}${cell(wl.reduce((a,l)=>a+l.ex,0))}${cell(wl.reduce((a,l)=>a+l.sets,0))}${cell(mins)}
+    </tr>`;
+  }).join('');
+
+  /* ٤) سجل الجلسات مجمّعاً بالأيام */
+  const groups=[];
+  logs.forEach(l=>{
+    const k=dayKey(l.ts);let g=groups.find(x=>x.k===k);
+    if(!g){g={k,ts:l.ts,items:[]};groups.push(g)}
+    g.items.push(l);
+  });
+  $('#stv-count').textContent=countAr(logs.length,['جلسة واحدة','جلستان','جلسات','جلسة']);
+  $('#stv-hist').innerHTML=groups.map(g=>`
+    <div class="hist-group">
+      <div class="hist-date">${relDay(g.ts)} <span>${dm(g.ts)}</span></div>
+      ${g.items.map(l=>`
+        <div class="hrow" data-id="${l.id}">
+          <div class="h-main">
+            <h5>${esc(l.name)}</h5>
+            <p>${countAr(l.ex,['تمرين واحد','تمرينان','تمارين','تمريناً'])} · ${countAr(l.sets,['مجموعة واحدة','مجموعتان','مجموعات','مجموعة'])}</p>
+          </div>
+          <span class="badge ${l.done?'ok':'part'}">${l.done?'مكتملة':'جزئية'}</span>
+          <span class="h-time" title="الزمن النشط">${fmt(l.secs)}</span>
+          <button class="icon-btn sm h-del" data-del="${l.id}" aria-label="حذف من السجل"><svg class="ic"><use href="#i-trash"/></svg></button>
+        </div>`).join('')}
+    </div>`).join('');
+}
+function deleteLog(id){
+  const idx=S.logs.findIndex(l=>l.id===id);if(idx<0)return;
+  const[l]=S.logs.splice(idx,1);save();renderStatsView();renderStats();
+  toast('تم حذف الجلسة من السجل',{label:'تراجع',fn:()=>{S.logs.splice(idx,0,l);save();renderStatsView();renderStats()}});
+}
+ $('#stv-hist').addEventListener('click',e=>{
+  const b=e.target.closest('[data-del]');if(!b)return;
+  deleteLog(b.dataset.del);
+});
+ $('#statsBtn').onclick=openStats;
+ $('#stv-close').onclick=closeStats;
+ $('#stv-go').onclick=closeStats;
+ $('#stv-clear').onclick=()=>confirmModal('مسح سجل الجلسات؟','ستُحذف جميع الجلسات المسجلة نهائياً، بينما تبقى أقسامك وتمارينك كما هي دون أي تغيير.','مسح السجل',
+  ()=>{S.logs=[];save();renderStatsView();renderStats();toast('تم مسح سجل الإحصائيات')});
+
+/* ================= مشغّل الجلسة ================= */
+const playerEl=$('#player'),pSecEl=$('#p-sec'),pChipEl=$('#p-chip'),pConfirmEl=$('#p-confirm');
+const ringwrapEl=$('#ringwrap'),ringBarEl=$('#ring-bar'),ringHeadEl=$('#ring-head');
+const phEl=$('#ph'),phLabelEl=$('#ph-label'),phNameEl=$('#ph-name'),phTimeEl=$('#ph-time'),phSubEl=$('#ph-sub');
+const dotsEl=$('#p-dots'),doneEl=$('#p-done'),doneStatsEl=$('#done-stats');
+const cPrevEl=$('#c-prev'),cPauseEl=$('#c-pause'),cNextEl=$('#c-next'),pausedLayer=$('#p-paused');
+const RC=2*Math.PI*118;ringBarEl.style.strokeDasharray=RC;
+const P={sec:null,steps:[],i:0,active:false,done:false,paused:false,timed:true,timer:null,
+  endAt:0,remainMs:0,lastSec:-1,tickAlt:false,activeMs:0,segStart:0,advTok:0};
+
+/* الحلقة محصّنة ضد أي قيمة غير رقمية */
+function setRing(frac){
+  frac=Math.min(1,Math.max(0,+frac||0));
+  ringBarEl.style.strokeDashoffset=RC*(1-frac);
+  ringHeadEl.setAttribute('transform',`rotate(${(360*(1-frac)).toFixed(2)} 130 130)`);
+}
+function stageAnim(){phEl.classList.remove('anim');void phEl.offsetWidth;phEl.classList.add('anim')}
+function pulseTime(){phTimeEl.classList.remove('pulse');void phTimeEl.offsetWidth;phTimeEl.classList.add('pulse')}
+function setPauseIcon(paused){
+  cPauseEl.innerHTML=`<svg class="ic"><use href="${paused?'#i-play':'#i-pause'}"/></svg>`;
+  cPauseEl.setAttribute('aria-label',paused?'متابعة':'إيقاف مؤقت');
+}
+function nextExercise(i){return P.steps.slice(i+1).find(s=>s.t==='ex')}
+function renderDots(){
+  dotsEl.innerHTML=P.steps.map((s,j)=>{
+    const type=s.t==='ex'?'ex':(s.t==='rest'?'rest':'prep');
+    const label=s.t==='ex'?s.ex.name:(s.t==='rest'?'راحة':'استعداد');
+    return `<button class="dot ${type}${j<P.i?' done':''}${j===P.i?' cur':''}" data-i="${j}" title="${esc(label)}" aria-label="${esc(label)}"></button>`;
+  }).join('');
+}
+function goStep(i){
+  P.advTok++;
+  if(P.timer){clearInterval(P.timer);P.timer=null}
+  if(i>=P.steps.length){finish();return}
+  P.i=i;const s=P.steps[P.i];
+  playerEl.dataset.phase=s.t==='ex'?(s.ex.mode==='reps'?'reps':'ex'):s.t;
+  pChipEl.textContent=`التمرين ${s.ei+1} من ${P.sec.exercises.length}`;
+  const isReps=s.t==='ex'&&s.ex.mode==='reps';
+  ringwrapEl.classList.toggle('tappable',isReps);
+  phTimeEl.classList.toggle('reps',isReps);
+  const nx=P.steps[P.i+1];
+  if(s.t==='prepare'){
+    phLabelEl.textContent='استعد';
+    phNameEl.textContent=s.exName;
+    phTimeEl.textContent=s.sec;
+    phSubEl.textContent=exMeta(s.meta);
+    announce('استعد. التمرين الأول: '+s.exName);
+  }else if(s.t==='ex'){
+    phLabelEl.textContent=s.totalSets>1?`المجموعة ${s.set} من ${s.totalSets}`:(s.ex.mode==='time'?'تمرين موقّت':'تمرين تكرارات');
+    phNameEl.textContent=s.ex.name;
+    if(isReps){
+      phTimeEl.textContent='×'+s.ex.reps;
+      phSubEl.innerHTML='<svg class="ic"><use href="#i-check"/></svg> اضغط على الدائرة عند الإنهاء';
+      setRing(1);
+    }else{
+      phTimeEl.textContent=fmt(s.sec);
+      if(!nx)phSubEl.textContent='التمرين الأخير — أقوى ختام';
+      else if(nx.t==='rest')phSubEl.textContent=`ثم راحة ${nx.sec} ث`;
+      else phSubEl.textContent='التالي: '+nx.ex.name;
+    }
+    const prev=P.steps[P.i-1];
+    if(!prev||prev.t==='prepare')announce('التمرين: '+s.ex.name);
+  }else if(s.t==='rest'){
+    const nEx=nextExercise(P.i);
+    phLabelEl.textContent='راحة';
+    phNameEl.textContent=nEx?nEx.ex.name:'';
+    phTimeEl.textContent=fmt(s.sec);
+    phSubEl.textContent=nEx?exMeta(nEx.ex):'';
+    Sfx.rest();
+    announce(`راحة ${s.sec} ثانية${nEx?`. التالي: ${nEx.ex.name}`:''}`);
+  }
+  P.timed=!isReps;P.tickAlt=false;
+  if(P.timed){
+    P.remainMs=s.sec*1000;P.endAt=performance.now()+P.remainMs;P.lastSec=s.sec+1;
+    setRing(1);
+    if(!P.paused){P.timer=setInterval(tick,100);tick()}
+  }
+  renderDots();stageAnim();
+}
+function tick(){
+  if(!P.active||P.paused||!P.timed)return;
+  const s=P.steps[P.i];
+  P.remainMs=Math.max(0,P.endAt-performance.now());
+  const secLeft=Math.ceil(P.remainMs/1000);
+  setRing(P.remainMs/(s.sec*1000));
+  if(secLeft!==P.lastSec){
+    P.lastSec=secLeft;
+    if(secLeft>0){
+      pulseTime();
+      if(secLeft<=3)Sfx.beep3();
+      else if(S.settings.tick){P.tickAlt=!P.tickAlt;Sfx.tock(P.tickAlt)}
+    }
+  }
+  phTimeEl.textContent=s.t==='prepare'?secLeft:fmt(secLeft);
+  if(P.remainMs<=0)stepDone();
+}
+function stepDone(){
+  if(P.timer){clearInterval(P.timer);P.timer=null}
+  const s=P.steps[P.i];
+  phTimeEl.textContent=s.t==='prepare'?'انطلق':'00:00';
+  setRing(0);
+  if(s.t==='prepare')Sfx.go();
+  else if(s.t==='ex')Sfx.done();
+  else Sfx.go();
+  const tok=P.advTok,delay=s.t==='ex'?700:450;
+  setTimeout(()=>{if(P.active&&P.advTok===tok)goStep(P.i+1)},delay);
+}
+function completeReps(){
+  const s=P.steps[P.i];
+  if(!P.active||P.done||P.paused||!(s&&s.t==='ex'&&s.ex.mode==='reps'))return;
+  ringwrapEl.classList.remove('pop');void ringwrapEl.offsetWidth;ringwrapEl.classList.add('pop');
+  Sfx.done();
+  const tok=P.advTok;
+  setTimeout(()=>{if(P.active&&P.advTok===tok)goStep(P.i+1)},550);
+}
+function setPaused(v){
+  if(P.done||!P.active||v===P.paused)return;
+  P.paused=v;
+  if(v){
+    if(P.timed){P.remainMs=Math.max(0,P.endAt-performance.now());if(P.timer){clearInterval(P.timer);P.timer=null}}
+    P.activeMs+=performance.now()-P.segStart;
+    pausedLayer.hidden=false;
+  }else{
+    P.segStart=performance.now();
+    if(P.timed){P.endAt=performance.now()+P.remainMs;P.timer=setInterval(tick,100);tick()}
+    pausedLayer.hidden=true;
+  }
+  setPauseIcon(v);
+}
+function finish(){
+  P.advTok++;if(P.timer){clearInterval(P.timer);P.timer=null}
+  if(!P.paused)P.activeMs+=performance.now()-P.segStart;
+  P.done=true;P.active=false;
+  P.i=P.steps.length; /* لتُحتسب جميع الخطوات ضمن السجل */
+  logSession();
+  playerEl.dataset.phase='done';pausedLayer.hidden=true;
+  const exN=P.sec.exercises.length,setN=P.steps.filter(s=>s.t==='ex').length;
+  doneStatsEl.textContent=`أكملت قسم «${P.sec.name}» بكل تمارينه — ${countAr(exN,['تمرين واحد','تمرينان','تمارين','تمريناً'])} · ${countAr(setN,['مجموعة واحدة','مجموعتان','مجموعات','مجموعة'])} · زمن الجلسة ${fmt(P.activeMs/1000)}`;
+  ringwrapEl.hidden=true;doneEl.hidden=false;
+  requestAnimationFrame(()=>doneEl.classList.add('go'));
+  Sfx.fanfare();announce('أحسنت، أكملت الجلسة');
+}
+function startPlayer(sec){
+  if(!sec.exercises.length){toast('هذا القسم فارغ — أضف تماريناً أولاً');Sfx.error();return}
+  Sfx.ensure();
+  P.sec=sec;P.steps=buildSteps(sec);
+  P.done=false;P.paused=false;P.active=true;P.activeMs=0;P.segStart=performance.now();P.advTok=0;
+  doneEl.hidden=true;doneEl.classList.remove('go');ringwrapEl.hidden=false;
+  pausedLayer.hidden=true;pConfirmEl.hidden=true;setPauseIcon(false);
+  pSecEl.textContent=sec.name;
+  playerEl.hidden=false;requestAnimationFrame(()=>playerEl.classList.add('show'));
+  document.body.classList.add('playing');
+  lockScreen();
+  goStep(0);
+}
+function closePlayer(){
+  if(P.active&&!P.done)logSession(); /* تسجيل الجلسة الجزئية عند الإنهاء المبكر */
+  P.active=false;P.done=false;
+  if(P.timer){clearInterval(P.timer);P.timer=null}
+  try{'speechSynthesis' in window&&speechSynthesis.cancel()}catch(e){}
+  unlockScreen();
+  playerEl.classList.remove('show');
+  document.body.classList.remove('playing');
+  setTimeout(()=>{playerEl.hidden=true},320);
+}
+/* أزرار المشغّل */
+ringwrapEl.addEventListener('click',completeReps);
+pausedLayer.addEventListener('click',()=>setPaused(false));
+cPauseEl.onclick=()=>setPaused(!P.paused);
+cNextEl.onclick=()=>{if(!P.active||P.done)return;Sfx.click();
+  if(P.i>=P.steps.length-1)finish();else goStep(P.i+1)};
+cPrevEl.onclick=()=>{if(!P.active||P.done)return;Sfx.click();goStep(Math.max(0,P.i-1))};
+dotsEl.addEventListener('click',e=>{
+  const d=e.target.closest('.dot');if(!d||!P.active)return;
+  Sfx.click();goStep(+d.dataset.i);
+});
+ $('#p-close').onclick=()=>{if(P.done||!P.active)closePlayer();else pConfirmEl.hidden=!pConfirmEl.hidden};
+ $('#p-c-no').onclick=()=>pConfirmEl.hidden=true;
+ $('#p-c-yes').onclick=()=>{pConfirmEl.hidden=true;closePlayer();toast('انتهت الجلسة — عودة أقوى قريباً')};
+ $('#d-again').onclick=()=>startPlayer(P.sec);
+ $('#d-close').onclick=closePlayer;
+ $('#d-stats').onclick=()=>{closePlayer();openStats()};
+
+/* ================= لوحة المفاتيح ================= */
+document.addEventListener('keydown',e=>{
+  if(!modalBack.hidden){
+    if(e.key==='Escape')closeModal();
+    else if(e.key==='Enter'&&e.target.tagName==='INPUT'){
+      const b=$('.m-body .btn-primary');if(b){e.preventDefault();b.click()}
+    }
+    return;
+  }
+  if(!statsviewEl.hidden){
+    if(e.key==='Escape')closeStats();
+    return;
+  }
+  if(!playerEl.hidden){
+    if(e.key===' '){e.preventDefault();setPaused(!P.paused)}
+    else if(e.key==='ArrowLeft'){e.preventDefault();cNextEl.click()}
+    else if(e.key==='ArrowRight'){e.preventDefault();cPrevEl.click()}
+    else if(e.key==='Escape')$('#p-close').click();
+  }
+});
+
+/* ================= أحداث عامة ================= */
+function syncSoundIcon(){
+  $('#soundBtn').innerHTML=`<svg class="ic"><use href="${S.settings.sound?'#i-vol':'#i-volx'}"/></svg>`;
+  $('#soundBtn').setAttribute('aria-label',S.settings.sound?'كتم الأصوات':'تشغيل الأصوات');
+}
+ $('#soundBtn').onclick=()=>{
+  S.settings.sound=!S.settings.sound;save();Sfx.setVol();syncSoundIcon();
+  if(S.settings.sound){Sfx.ensure();Sfx.done()}
+  toast(S.settings.sound?'الأصوات مفعّلة':'تم كتم الأصوات');
+};
+ $('#settingsBtn').onclick=openSettings;
+ $('#addSectionBtn').onclick=()=>openSectionModal();
+ $('#e-create').onclick=()=>openSectionModal();
+ $('#e-sample').onclick=()=>{
+  S.sections=SAMPLE.map(s=>({id:uid(),name:s.name,exercises:s.exercises.map(x=>({...x,id:uid()}))}));
+  S.openIds=S.sections.map(s=>s.id);
+  save();render();toast('تم تحميل برنامج تجريبي — عدّله كما تشاء');
+};
+
+/* ================= الإقلاع ================= */
+load();render();syncSoundIcon();
+document.addEventListener('pointerdown',()=>Sfx.ensure(),{once:true}); // تفعيل الصوت من أول لمسة
+if('speechSynthesis' in window)speechSynthesis.getVoices(); // تحضير الأصوات العربية للنطق
+</script>
+</body>
+</html>
