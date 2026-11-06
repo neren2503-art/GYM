@@ -1,0 +1,29 @@
+{
+  "name": "إيقاع — برنامج تمارينك الشخصي",
+  "short_name": "إيقاع",
+  "description": "ابنِ أقسامك وتمارينك بالوقت أو التكرار، وشغّل جلساتك بمؤقّت وأصوات وإحصائيات كاملة — يعمل دون اتصال.",
+  "lang": "ar",
+  "dir": "rtl",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0D08",
+  "theme_color": "#0B0D08",
+  "categories": ["fitness", "health", "lifestyle"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='118' fill='%230B0D08'/%3E%3Crect x='70' y='240' width='60' height='140' rx='30' fill='%23CDF554'/%3E%3Crect x='174' y='160' width='60' height='220' rx='30' fill='%23CDF554'/%3E%3Crect x='278' y='210' width='60' height='170' rx='30' fill='%23CDF554'/%3E%3Crect x='382' y='120' width='60' height='260' rx='30' fill='%23CDF554'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230B0D08'/%3E%3Crect x='70' y='240' width='60' height='140' rx='30' fill='%23CDF554'/%3E%3Crect x='174' y='160' width='60' height='220' rx='30' fill='%23CDF554'/%3E%3Crect x='278' y='210' width='60' height='170' rx='30' fill='%23CDF554'/%3E%3Crect x='382' y='120' width='60' height='260' rx='30' fill='%23CDF554'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
