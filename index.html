@@ -361,6 +361,12 @@ body.rec-open{overflow:hidden}
 .rv-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .rv-wrap{max-width:760px;margin:0 auto;padding:26px clamp(16px,4vw,28px) calc(70px + env(safe-area-inset-bottom));
   display:flex;flex-direction:column;gap:30px}
+  #rv-body{display:flex;flex-direction:column;gap:30px}
+.rv-widget{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px;
+  border:1.5px dashed rgba(87,216,194,.35);border-radius:14px;background:none;color:var(--teal);
+  font:600 13px 'IBM Plex Sans Arabic';cursor:pointer;transition:.2s}
+.rv-widget:hover{background:rgba(87,216,194,.06);border-color:var(--teal)}
+.rv-widget .ic{width:16px;height:16px}
 /* حالة البداية */
 .rv-start{text-align:center;padding:36px 20px 10px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .rv-start .e-ic{width:64px;height:64px;color:var(--teal);opacity:.85;margin-bottom:8px}
@@ -718,7 +724,7 @@ body.rec-open{overflow:hidden}
           <div class="st-h"><h4>أرقام رحلتك</h4></div>
           <div class="strip" id="rv-strip"></div>
         </section>
-
+        <button class="rv-widget" id="rv-widget"><svg class="ic"><use href="#i-shield"/></svg>أضف ويدجت التعافي لشاشتك الرئيسية</button>
         <section class="st-sec" id="rv-hist-sec" style="animation-delay:.3s" hidden>
           <div class="st-h"><h4>سجل التعثرات</h4><span>التعثر يُحتسب فقط عندما تبقى أرضاً</span></div>
           <div id="rv-hist"></div>
@@ -1587,6 +1593,10 @@ function doRelapse(){
   toast('سلسلة جديدة بدأت الآن — العودة السريعة هي سرّ النجاح');
 }
  $('#recoveryBtn').onclick=openRecovery;
+   $('#rv-widget').onclick=()=>{
+  window.open('./widget.html','_blank');
+  toast('افتح صفحة الويدجت ثم أضفها لشاشتك الرئيسية من قائمة المتصفح');
+};
  $('#rv-close').onclick=closeRecovery;
  $('#rv-begin').onclick=()=>{
   S.recovery.start=Date.now();save();renderRecovery();checkMilestone();
