@@ -89,11 +89,13 @@ body.playing .mark i:nth-child(3){animation-delay:.3s}
 body.playing .mark i:nth-child(4){animation-delay:.45s}
 @keyframes eq{from{transform:scaleY(.5)}to{transform:scaleY(1)}}
 .top-actions{display:flex;gap:6px;align-items:center}
+#recoveryBtn .ic{color:var(--teal)}
 .btn-stats,.btn-install{padding:9px 14px;font-size:13px;border-radius:11px}
 .btn-stats .ic{width:15px;height:15px;color:var(--volt)}
 .btn-install .ic{width:15px;height:15px}
 @media(max-width:520px){.btn-stats span,.btn-install span{display:none}.btn-stats,.btn-install{padding:9px 11px}}
 @media(max-width:430px){.brand-txt span{display:none}}
+@media(max-width:380px){.top-actions .icon-btn{width:36px;height:36px}}
 
 /* ============ المقدمة ============ */
 .intro{padding:clamp(36px,7vw,64px) 0 26px;animation:rise .6s cubic-bezier(.22,1,.36,1) both}
@@ -346,6 +348,89 @@ body.stats-open{overflow:hidden}
 .st-empty p{color:var(--muted);font-size:14px;max-width:44ch;line-height:1.9}
 .st-empty .btn{margin-top:18px}
 
+/* ============ قسم التعافي ============ */
+.recview{position:fixed;inset:0;z-index:92;display:flex;flex-direction:column;background:var(--bg);
+  opacity:0;transition:opacity .3s ease}
+.recview.show{opacity:1}
+body.rec-open{overflow:hidden}
+.rv-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px clamp(16px,4vw,28px);
+  background:rgba(11,13,8,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);position:relative;z-index:2}
+.rv-top h3{font:700 23px Changa;color:var(--teal)}
+.rv-top .sub{display:block;font-size:12px;color:var(--faint);margin-top:2px}
+.rv-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.rv-wrap{max-width:760px;margin:0 auto;padding:26px clamp(16px,4vw,28px) calc(70px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:30px}
+/* حالة البداية */
+.rv-start{text-align:center;padding:36px 20px 10px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rv-start .e-ic{width:64px;height:64px;color:var(--teal);opacity:.85;margin-bottom:8px}
+.rv-start h3{font:700 25px Changa}
+.rv-start>p{color:var(--muted);font-size:14px;max-width:46ch;line-height:1.9}
+.rv-start .btn{margin-top:18px}
+.rv-fromdate{margin-top:24px;display:flex;flex-direction:column;gap:12px;align-items:center;
+  border-top:1px solid var(--line);padding-top:22px;width:100%;max-width:340px}
+.rv-fromdate>span{font-size:12.5px;color:var(--faint)}
+.rv-fromdate input{max-width:220px;text-align:center}
+/* العدّاد الحي */
+.rv-hero{text-align:center;padding:6px 0 4px}
+.rv-days b{font:800 clamp(70px,22vw,120px)/1 Changa;color:var(--teal);display:block}
+.rv-days span{font-size:13px;color:var(--muted)}
+.rv-clock{font:600 clamp(24px,7vw,34px)/1.1 Changa;color:var(--text);margin-top:10px;font-variant-numeric:tabular-nums}
+.rv-best{margin-top:12px;font-size:12.5px;color:var(--faint)}
+.rv-actions{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.rv-next{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:22px;text-align:start}
+.rv-next .t{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin-bottom:12px;flex-wrap:wrap}
+.rv-bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.rv-bar i{display:block;height:100%;border-radius:99px;background:var(--teal);transition:width 1s ease}
+/* مسار المحطات */
+.ms-wrap{overflow-x:auto;padding:12px 2px 4px;-webkit-overflow-scrolling:touch}
+.ms-track{display:flex;justify-content:space-between;position:relative;min-width:560px;padding:0 8px}
+.ms-track::before{content:'';position:absolute;top:19px;right:8px;left:8px;height:2px;background:var(--line);border-radius:2px}
+.ms-fill{position:absolute;top:19px;right:8px;height:2px;background:var(--teal);border-radius:2px;transition:width 1s ease;z-index:0}
+.ms{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;width:56px;flex:none}
+.ms i{width:38px;height:38px;border-radius:50%;border:2px solid var(--line2);background:var(--bg);
+  display:grid;place-items:center;font:700 12px Changa;color:var(--faint);font-style:normal;transition:.3s}
+.ms.on i{border-color:var(--teal);background:var(--teal);color:var(--ink)}
+.ms span{font-size:10px;color:var(--faint);text-align:center;line-height:1.5}
+.ms.on span{color:var(--muted)}
+/* خط زمني للفوائد */
+.bens{display:flex;flex-direction:column}
+.ben{display:flex;gap:14px;position:relative;padding-bottom:22px}
+.ben::before{content:'';position:absolute;top:30px;bottom:2px;inset-inline-start:13px;width:2px;background:var(--line)}
+.ben:last-child{padding-bottom:4px}
+.ben:last-child::before{display:none}
+.ben .bdot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line2);display:grid;
+  place-items:center;flex:none;background:var(--bg);z-index:1}
+.ben.on .bdot{border-color:var(--teal);background:var(--teal);color:var(--ink)}
+.ben .bdot .ic{width:13px;height:13px}
+.ben h5{font-size:14px;font-weight:600}
+.ben:not(.on) h5{color:var(--muted)}
+.ben p{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.8}
+/* جرعة تحفيز */
+.quote{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px 22px;
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.quote p{font:600 17px/2.1 Changa;color:var(--text);max-width:44ch}
+.quote p.anim{animation:stageIn .4s cubic-bezier(.22,1,.36,1)}
+.hd-date{font:500 11.5px 'IBM Plex Sans Arabic';color:var(--faint);margin-inline-start:6px}
+/* غرفة الطوارئ: التنفّس الإرشادي */
+.panic{position:fixed;inset:0;z-index:96;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:20px;background:#081210;opacity:0;transition:opacity .3s;text-align:center;
+  padding:70px 20px 30px;overflow-y:auto}
+.panic.show{opacity:1}
+.panic h3{font:700 23px Changa}
+.panic-close{position:absolute;top:16px;inset-inline-end:16px}
+.br-circle{width:min(62vw,230px);aspect-ratio:1;border-radius:50%;border:2px solid var(--teal);
+  background:rgba(87,216,194,.06);display:grid;place-items:center;transform:scale(1);
+  transition:transform 4s ease-in-out;will-change:transform;flex:none}
+.br-in b{font:800 54px/1 Changa;color:var(--teal);display:block;text-align:center}
+.br-in span{display:block;font-size:15px;color:var(--muted);margin-top:6px}
+.br-cycles{font-size:13px;color:var(--faint)}
+.panic-tips{list-style:none;display:flex;flex-direction:column;gap:11px;font-size:13px;color:var(--muted);
+  max-width:340px;text-align:start}
+.panic-tips li{display:flex;align-items:flex-start;gap:10px;line-height:1.7}
+.panic-tips li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);flex:none;margin-top:8px}
+.panic-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
 /* ============ النوافذ ============ */
 .modal-wrap{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:18px;
   background:rgba(6,8,4,.68);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;transition:opacity .22s}
@@ -422,7 +507,7 @@ body.stats-open{overflow:hidden}
 @media(display-mode:standalone),(display-mode:fullscreen){
   .top{padding-top:calc(13px + env(safe-area-inset-top))}
   .player .p-top{padding-top:calc(15px + env(safe-area-inset-top))}
-  .st-top{padding-top:calc(14px + env(safe-area-inset-top))}
+  .st-top,.rv-top{padding-top:calc(14px + env(safe-area-inset-top))}
 }
 
 /* ============ التجاوب ============ */
@@ -472,6 +557,8 @@ body.stats-open{overflow:hidden}
   <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 19v-8"/><path d="M12 19V4"/><path d="M19 19v-5"/><path d="M3 19h18"/></g></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></g></symbol>
   <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m8 6.5 4-4 4 4"/><path d="M6.5 11H5.5a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2h-1"/></g></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.7v5.5c0 4.6 2.9 8.4 7 9.8 4.1-1.4 7-5.2 7-9.8V5.7z"/><path d="m9 11.6 2.2 2.2 4-4.6"/></g></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 19.6A2 2 0 1 0 14 16H3"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H3"/><path d="M9.8 4.4A2 2 0 1 1 11 8H3"/></g></symbol>
 </svg>
 
 <!-- الرأس -->
@@ -483,6 +570,7 @@ body.stats-open{overflow:hidden}
   <div class="top-actions">
     <button class="btn btn-volt btn-install" id="installBtn" hidden><svg class="ic"><use href="#i-download"/></svg><span>تثبيت التطبيق</span></button>
     <button class="btn btn-ghost btn-stats" id="statsBtn"><svg class="ic"><use href="#i-chart"/></svg><span>إحصائياتي</span></button>
+    <button class="icon-btn" id="recoveryBtn" aria-label="قسم التعافي"><svg class="ic"><use href="#i-shield"/></svg></button>
     <button class="icon-btn" id="soundBtn" aria-label="كتم الأصوات"></button>
     <button class="icon-btn" id="settingsBtn" aria-label="الإعدادات"><svg class="ic"><use href="#i-sliders"/></svg></button>
   </div>
@@ -496,7 +584,7 @@ body.stats-open{overflow:hidden}
     <div class="intro-actions">
       <button class="btn btn-volt" id="addSectionBtn"><svg class="ic"><use href="#i-plus"/></svg>قسم جديد</button>
     </div>
-    <!-- تلميح التثبيت لأجهزة آيفون -->
+    <!-- تلميح التثبيت على iOS -->
     <div class="ios-tip" id="iosTip" hidden>
       <svg class="ic"><use href="#i-share"/></svg>
       <p>لتثبيت التطبيق على جهازك: اضغط <b>زر المشاركة</b> في سفاري ثم اختر <b>«إضافة إلى الشاشة الرئيسية»</b> — وستجد التطبيق كأيقونة مستقلة تعمل دون إنترنت.</p>
@@ -564,6 +652,98 @@ body.stats-open{overflow:hidden}
         </section>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- قسم التعافي -->
+<div class="recview" id="recovery" hidden>
+  <div class="rv-top">
+    <div>
+      <h3>تعافي</h3>
+      <span class="sub">مساحتك الخاصة للتحرر من العادة السرية — خطوة بخطوة</span>
+    </div>
+    <button class="icon-btn" id="rv-close" aria-label="إغلاق"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="rv-scroll">
+    <div class="rv-wrap">
+
+      <!-- حالة البداية -->
+      <div class="rv-start" id="rv-empty" hidden>
+        <svg class="e-ic"><use href="#i-shield"/></svg>
+        <h3>رحلة التحرر تبدأ بقرار</h3>
+        <p>هذه مساحتك الخاصة: عدّاد أيام حيّ، محطات إنجاز، ما يحدث في جسدك مرحلة بمرحلة، تنفّس إرشادي عند الرغبة، وسجل رحلتك الكامل. كل شيء محفوظ في جهازك وحده — لا يطلع عليه أحد.</p>
+        <button class="btn btn-volt" id="rv-begin"><svg class="ic"><use href="#i-shield"/></svg>أبدأ رحلتي الآن</button>
+        <div class="rv-fromdate">
+          <span>سبق أن بدأت؟ سجّل تاريخ بدايتك الحقيقي:</span>
+          <input type="date" id="rv-date" class="inp">
+          <button class="btn btn-ghost sm" id="rv-fromdate">سجّل البداية</button>
+        </div>
+      </div>
+
+      <!-- الرحلة النشطة -->
+      <div id="rv-body" hidden>
+        <div class="rv-hero st-sec">
+          <div class="rv-days"><b id="rv-dnum">0</b><span>أيام نظيفة</span></div>
+          <div class="rv-clock" id="rv-clock">00:00:00</div>
+          <div class="rv-best" id="rv-best"></div>
+          <div class="rv-actions">
+            <button class="btn btn-volt" id="rv-panic"><svg class="ic"><use href="#i-wind"/></svg>أشعر برغبة الآن</button>
+            <button class="btn btn-ghost" id="rv-relapse">تسجيل تعثر</button>
+          </div>
+          <div class="rv-next">
+            <div class="t"><span id="rv-nextlabel"></span><span id="rv-nextpct"></span></div>
+            <div class="rv-bar"><i id="rv-nextbar"></i></div>
+          </div>
+        </div>
+
+        <section class="st-sec" style="animation-delay:.06s">
+          <div class="st-h"><h4>محطات الرحلة</h4><span id="rv-mscount"></span></div>
+          <div class="ms-wrap"><div class="ms-track" id="rv-track"></div></div>
+        </section>
+
+        <section class="st-sec" style="animation-delay:.12s">
+          <div class="st-h"><h4>ما يحدث في جسدك وعقلك</h4><span>محطات يمر بها أغلب المتبعين</span></div>
+          <div class="bens" id="rv-bens"></div>
+        </section>
+
+        <section class="st-sec" style="animation-delay:.18s">
+          <div class="st-h"><h4>جرعة تحفيز</h4></div>
+          <div class="quote">
+            <p id="rv-quote"></p>
+            <button class="btn btn-ghost sm" id="rv-newquote"><svg class="ic"><use href="#i-repeat"/></svg>رسالة أخرى</button>
+          </div>
+        </section>
+
+        <section class="st-sec" style="animation-delay:.24s">
+          <div class="st-h"><h4>أرقام رحلتك</h4></div>
+          <div class="strip" id="rv-strip"></div>
+        </section>
+
+        <section class="st-sec" id="rv-hist-sec" style="animation-delay:.3s" hidden>
+          <div class="st-h"><h4>سجل التعثرات</h4><span>التعثر يُحتسب فقط عندما تبقى أرضاً</span></div>
+          <div id="rv-hist"></div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- غرفة الطوارئ: تنفّس إرشادي عند الرغبة -->
+<div class="panic" id="panic" hidden>
+  <button class="icon-btn panic-close" id="panic-close" aria-label="إغلاق"><svg class="ic"><use href="#i-x"/></svg></button>
+  <h3>الموجة ستنكسر — تنفّس معي</h3>
+  <div class="br-circle" id="br-circle"><div class="br-in"><b id="br-num">4</b><span id="br-label">شهيق</span></div></div>
+  <div class="br-cycles" id="br-cycles">الدورة 0 — شهيق ٤ · احبس ٧ · زفير ٨</div>
+  <ul class="panic-tips">
+    <li>غيّر مكانك فوراً — الخروج من الغرفة يكسر الإشارة</li>
+    <li>اسكب ماءً بارداً على وجهك</li>
+    <li>الحركة تكسر الرغبة — جرّب ٢٠ ضغطاً الآن</li>
+    <li>الرغبة موجة: تصعد… ثم تنكسر خلال دقائق</li>
+  </ul>
+  <div class="panic-btns">
+    <button class="btn btn-ghost" id="panic-workout"><svg class="ic"><use href="#i-dumbbell"/></svg>حوّلها إلى تمرين</button>
+    <button class="btn btn-volt" id="panic-win"><svg class="ic"><use href="#i-check"/></svg>تجاوزت الرغبة</button>
   </div>
 </div>
 
@@ -643,6 +823,7 @@ const clampN=(v,a,z,d)=>{const n=Math.round(+v);return isNaN(n)?d:Math.min(z,Mat
 /* صيغة الوقت محصّنة ضد أي قيمة غير رقمية */
 const fmt=s=>{s=Math.max(0,Math.round(+s||0));const m=Math.floor(s/60),r=s%60;return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0')};
 function human(sec){sec=Math.round(sec);if(sec<60)return sec+' ث';const m=Math.floor(sec/60),r=sec%60;return r?m+' د '+r+' ث':m+' د'}
+function humanDur(days){const d=Math.floor(days),h=Math.round((days-d)*24);if(d<=0)return h+' ساعة';if(h>0)return d+' يوم و '+h+' ساعة';return d+' يوم'}
 function countAr(n,w){if(n===1)return w[0];if(n===2)return w[1];if(n>=3&&n<=10)return n+' '+w[2];return n+' '+w[3]}
 /* أدوات التاريخ (كل الحسابات بالتوقيت المحلي) */
 const DAY_NAMES=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -663,14 +844,16 @@ function relDay(ts){
 /* ================= الحالة والتخزين ================= */
 const KEY='iqa3-app-v1';
 const DEFAULTS={rest:30,prepare:5,sound:true,tick:true,voice:true,wake:true,volume:.8};
-const S={sections:[],settings:{...DEFAULTS},openIds:[],logs:[]};
-function save(){localStorage.setItem(KEY,JSON.stringify({sections:S.sections,settings:S.settings,open:S.openIds,logs:S.logs}))}
+const RECO_DEF={start:null,best:0,totalClean:0,resisted:0,relapses:[],seen:0};
+const S={sections:[],settings:{...DEFAULTS},openIds:[],logs:[],recovery:{...RECO_DEF}};
+function save(){localStorage.setItem(KEY,JSON.stringify({sections:S.sections,settings:S.settings,open:S.openIds,logs:S.logs,recovery:S.recovery}))}
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   S.sections=(d&&d.sections)||[];
   S.settings={...DEFAULTS,...((d&&d.settings)||{})};
   S.openIds=((d&&d.open)||[]).filter(id=>S.sections.some(s=>s.id===id));
   S.logs=((d&&d.logs)||[]);
+  S.recovery={...RECO_DEF,...((d&&d.recovery)||{})};
   /* تنظيف وقائي لكل البيانات المحفوظة */
   S.sections.forEach(sec=>(sec.exercises||[]).forEach(x=>{
     x.mode=x.mode==='reps'?'reps':'time';
@@ -683,6 +866,13 @@ function load(){
     l.ex=clampN(l.ex,0,999,0);l.sets=clampN(l.sets,0,999,0);l.secs=clampN(l.secs,0,86400,0);
     l.ts=+l.ts||Date.now();l.done=!!l.done;l.name=String(l.name||'جلسة');
   });
+  const rc=S.recovery;
+  rc.start=+rc.start||null;
+  rc.best=clampN(rc.best,0,36500,0);
+  rc.totalClean=Math.max(0,+rc.totalClean||0);
+  rc.resisted=clampN(rc.resisted,0,99999,0);
+  rc.seen=clampN(rc.seen,0,36500,0);
+  rc.relapses=Array.isArray(rc.relapses)?rc.relapses.map(l=>({id:String(l.id||uid()),ts:+l.ts||Date.now(),day:clampN(l.day,0,36500,0)})):[];
 }
 const byId=id=>S.sections.find(s=>s.id===id);
 
@@ -896,7 +1086,7 @@ function openSettings(){
       <label class="sw"><input type="checkbox" id="st-wake" ${st.wake?'checked':''}><i></i></label></div>
     <div class="danger">
       <div><div class="t" style="font-size:14px;font-weight:600">حذف جميع البيانات</div>
-      <div class="d" style="font-size:12px;color:var(--faint);margin-top:3px">يمسح كل الأقسام والتمارين وسجل الإحصائيات نهائياً</div></div>
+      <div class="d" style="font-size:12px;color:var(--faint);margin-top:3px">يمسح كل الأقسام والتمارين والإحصائيات وسجل التعافي نهائياً</div></div>
       <button class="btn btn-red sm" id="st-wipe">حذف</button>
     </div>`);
   wireChips(b);
@@ -910,8 +1100,8 @@ function openSettings(){
   vol.addEventListener('input',()=>{S.settings.volume=vol.value/100;Sfx.setVol();save()});
   vol.addEventListener('change',()=>Sfx.done());
   $('#st-wipe',b).onclick=()=>{closeModal();
-    confirmModal('حذف جميع البيانات؟','سيتم مسح كل الأقسام والتمارين وسجل الإحصائيات نهائياً ولا يمكن التراجع.','حذف الكل',
-      ()=>{S.sections=[];S.openIds=[];S.logs=[];save();render();toast('تم حذف جميع البيانات')})};
+    confirmModal('حذف جميع البيانات؟','سيتم مسح كل الأقسام والتمارين والإحصائيات وسجل التعافي نهائياً ولا يمكن التراجع.','حذف الكل',
+      ()=>{S.sections=[];S.openIds=[];S.logs=[];S.recovery={...RECO_DEF};save();render();toast('تم حذف جميع البيانات')})};
 }
 function confirmModal(title,msg,okText,onOk){
   const b=openModal(title,`<p class="c-msg">${msg}</p>
@@ -1237,6 +1427,254 @@ function deleteLog(id){
  $('#stv-clear').onclick=()=>confirmModal('مسح سجل الجلسات؟','ستُحذف جميع الجلسات المسجلة نهائياً، بينما تبقى أقسامك وتمارينك كما هي دون أي تغيير.','مسح السجل',
   ()=>{S.logs=[];save();renderStatsView();renderStats();toast('تم مسح سجل الإحصائيات')});
 
+/* ================= قسم التعافي (التحرر من العادة السرية) ================= */
+const recviewEl=$('#recovery'),panicEl=$('#panic');
+const MILES=[
+  {d:1,l:'الخطوة الأولى'},{d:3,l:'كسر الحلقة'},{d:7,l:'أسبوع كامل'},{d:14,l:'أسبوعان'},
+  {d:30,l:'شهر كامل'},{d:60,l:'شهران'},{d:90,l:'الهدف الكبير'},{d:180,l:'نصف سنة'},{d:365,l:'سنة كاملة'}
+];
+const BENS=[
+  {d:1,t:'اليوم الأول',p:'كسرت الحلقة. أهم يوم في الرحلة — دماغك بدأ يلاحظ التغيير.'},
+  {d:3,t:'٣ أيام',p:'أصعب ٧٢ ساعة مرّت. دورة الدوبامين تبدأ بالتهدئ والعودة إلى التوازن.'},
+  {d:7,t:'أسبوع',p:'طاقة أوضح وصفاء ذهني يذكره أغلب المتبعين في هذه المرحلة.'},
+  {d:14,t:'أسبوعان',p:'نوم أعمق، تركيز أطول، وبدء استعادة الثقة بالنفس.'},
+  {d:30,t:'شهر',p:'الانضباط لم يعد مجهوداً — بدأ يتحول إلى هوية تنتقل لبقية جوانب حياتك.'},
+  {d:90,t:'٩٠ يوماً',p:'الهدف الأشهر: إعادة برمجة استجابة الدماغ وبناء نسخة أقوى منك.'}
+];
+const QUOTES=[
+  'الرغبة موجة: تصعد، ثم تنكسر. كل ما عليك ألا تركبها.',
+  'خمس دقائق من الصمود قد تغيّر مسار يومك كله.',
+  'كل مرة تقاوم، تصغر المرة القادمة.',
+  'أنت لا تُحرم من شيء… أنت تستعيد نفسك.',
+  'قوة الإرادة عضلة — واليوم هو تمرينها.',
+  'التعثر ليس نهاية الرحلة، البقاء على الأرض هو.',
+  'لن تشعر بالرغبة إلى الأبد — غالباً تزول خلال ربع ساعة.',
+  'لا تتفاوض مع الرغبة، لا يوجد عرض جيد أبداً.',
+  'انضباطك في هذه اللحظة يرسم من ستكون بعد سنة.',
+  'الطاقة التي تأكلها العادة هي نفسها التي ستخدمك أنت.',
+  'إذا استطعت أن تقول «لا» الآن، ستستطيعها في كل مرة.',
+  'راحة الرغبة دقيقة، وراحة الانتصار دائمة.',
+  'لا تعدّ الأيام التي صمدتها فقط — عُدّ القوة التي بُنيت.',
+  'الشخص الذي تحلم أن تصبحه يبدأ من قرارك الآن.',
+  'الأبطال ليسوا من لا يسقطون، بل من ينهضون أسرع.'
+];
+let recTimer=null,quoteIdx=Math.floor(Math.random()*QUOTES.length);
+
+function openRecovery(){
+  renderRecovery();
+  recviewEl.hidden=false;
+  requestAnimationFrame(()=>recviewEl.classList.add('show'));
+  document.body.classList.add('rec-open');
+  recviewEl.querySelector('.rv-scroll').scrollTop=0;
+  clearInterval(recTimer);
+  /* العدّاد الحي — يتحدث كل ثانية */
+  recTimer=setInterval(()=>{
+    if(!S.recovery.start)return;
+    const ms=Date.now()-S.recovery.start;
+    const h=String(Math.floor(ms/3600000)%24).padStart(2,'0'),
+          m=String(Math.floor(ms/60000)%60).padStart(2,'0'),
+          s=String(Math.floor(ms/1000)%60).padStart(2,'0');
+    $('#rv-clock').textContent=h+':'+m+':'+s;
+    const d=Math.floor(ms/86400000),db=$('#rv-dnum');
+    if(+db.textContent!==d){db.textContent=d;renderRecovery()} /* يوم جديد أثناء التصفح */
+  },1000);
+  Sfx.click();
+  checkMilestone();
+}
+function closeRecovery(){
+  clearInterval(recTimer);recTimer=null;
+  if(BR.running)closePanic();
+  recviewEl.classList.remove('show');
+  document.body.classList.remove('rec-open');
+  setTimeout(()=>{recviewEl.hidden=true},300);
+}
+function renderRecovery(){
+  const r=S.recovery;
+  const emptyR=$('#rv-empty'),bodyR=$('#rv-body');
+  if(!r.start){emptyR.hidden=false;bodyR.hidden=true;return}
+  emptyR.hidden=true;bodyR.hidden=false;
+  const ms=Date.now()-r.start;
+  const days=ms/86400000,dInt=Math.floor(days);
+  /* العدّاد */
+  $('#rv-dnum').textContent=dInt;
+  const h=String(Math.floor(ms/3600000)%24).padStart(2,'0'),
+        m=String(Math.floor(ms/60000)%60).padStart(2,'0'),
+        s=String(Math.floor(ms/1000)%60).padStart(2,'0');
+  $('#rv-clock').textContent=h+':'+m+':'+s;
+  const best=Math.max(r.best,dInt);
+  $('#rv-best').textContent=best>0
+    ?'بدأت في '+dm(r.start)+' · أفضل إنجاز: '+best+' يوم'
+    :'بدأت في '+dm(r.start)+' · هذه أول رحلتك الموثقة';
+  /* المحطة القادمة */
+  const next=MILES.find(x=>x.d>days);
+  if(next){
+    const prevD=[...MILES].reverse().find(x=>x.d<=days);
+    const base=prevD?prevD.d:0;
+    const frac=Math.min(1,Math.max(0,(days-base)/(next.d-base)));
+    $('#rv-nextlabel').textContent='بقي '+humanDur(next.d-days)+' لإنجاز «'+next.l+'»';
+    $('#rv-nextpct').textContent=Math.round(frac*100)+'%';
+    $('#rv-nextbar').style.width=(frac*100)+'%';
+  }else{
+    $('#rv-nextlabel').textContent='أنجزت كل المحطات — أنت أسطورة';
+    $('#rv-nextpct').textContent='100%';
+    $('#rv-nextbar').style.width='100%';
+  }
+  /* مسار المحطات */
+  const n=MILES.length;
+  let li=-1;MILES.forEach((x,i)=>{if(x.d<=days)li=i});
+  let pos=1;
+  if(li<n-1){
+    const base=li>=0?MILES[li].d:0;
+    const f=(days-base)/(MILES[li+1].d-base);
+    pos=(li+Math.max(0,Math.min(1,f)))/(n-1);
+  }
+  $('#rv-track').innerHTML=
+    `<span class="ms-fill" style="width:calc(${(pos*100).toFixed(1)}% - 16px)"></span>`+
+    MILES.map(x=>`<div class="ms${x.d<=days?' on':''}"><i>${x.d}</i><span>${x.l}</span></div>`).join('');
+  const mc=MILES.filter(x=>x.d<=days).length;
+  $('#rv-mscount').textContent=mc?countAr(mc,['محطة واحدة محققة','محطتان محققتان','محطات محققة','محطة محققة']):'أول محطة عند يوم واحد';
+  /* خط زمني للفوائد */
+  $('#rv-bens').innerHTML=BENS.map(b=>`
+    <div class="ben${b.d<=days?' on':''}">
+      <span class="bdot">${b.d<=days?'<svg class="ic"><use href="#i-check"/></svg>':''}</span>
+      <div><h5>${b.t}</h5><p>${b.p}</p></div>
+    </div>`).join('');
+  /* جرعة التحفيز */
+  $('#rv-quote').textContent=QUOTES[quoteIdx];
+  /* أرقام الرحلة */
+  const totalDays=Math.floor((r.totalClean+ms)/86400000);
+  $('#rv-strip').innerHTML=`
+    <div class="cell"><span><svg class="ic"><use href="#i-shield"/></svg>محاولات الرحلة</span><b>${r.relapses.length+1}</b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-sun"/></svg>أفضل سلسلة</span><b>${best}<i>يوم</i></b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-check"/></svg>أيام نظيفة إجمالاً</span><b>${totalDays}<i>يوم</i></b></div>
+    <div class="cell"><span><svg class="ic"><use href="#i-wind"/></svg>رغبات تجاوزتها</span><b>${r.resisted}</b></div>`;
+  /* سجل التعثرات */
+  const histSec=$('#rv-hist-sec');
+  if(r.relapses.length){
+    histSec.hidden=false;
+    $('#rv-hist').innerHTML=[...r.relapses].sort((a,b)=>b.ts-a.ts).map(l=>{
+      const dayTxt=l.day===0?'أقل من يوم':(l.day===1?'يوماً واحداً':l.day===2?'يومين':l.day+' يوماً');
+      return `<div class="hrow">
+        <div class="h-main">
+          <h5>${relDay(l.ts)}<span class="hd-date">${dm(l.ts)}</span></h5>
+          <p>صمدت ${dayTxt} قبل هذا التعثر</p>
+        </div>
+        <button class="icon-btn sm h-del" data-rdel="${l.id}" aria-label="حذف من السجل"><svg class="ic"><use href="#i-trash"/></svg></button>
+      </div>`;
+    }).join('');
+  }else histSec.hidden=true;
+}
+/* الاحتفال عند بلوغ محطة جديدة */
+function checkMilestone(){
+  const r=S.recovery;if(!r.start)return;
+  const days=(Date.now()-r.start)/86400000;
+  let top=0,label=null;
+  MILES.forEach(x=>{if(x.d<=days){top=x.d;label=x.l}});
+  if(top>r.seen){
+    r.seen=top;save();
+    Sfx.fanfare();
+    toast('إنجاز جديد: «'+label+'» — واصل، أنت أقوى كل يوم');
+  }
+}
+function doRelapse(){
+  const r=S.recovery,now=Date.now();
+  const clean=now-r.start,day=Math.floor(clean/86400000);
+  r.totalClean+=clean;
+  if(day>r.best)r.best=day;
+  r.relapses.push({id:uid(),ts:now,day});
+  r.start=now;r.seen=0; /* سلسلة جديدة تبدأ الآن — والاحتفالات تبدأ معها من جديد */
+  save();renderRecovery();
+  toast('سلسلة جديدة بدأت الآن — العودة السريعة هي سرّ النجاح');
+}
+ $('#recoveryBtn').onclick=openRecovery;
+ $('#rv-close').onclick=closeRecovery;
+ $('#rv-begin').onclick=()=>{
+  S.recovery.start=Date.now();save();renderRecovery();checkMilestone();
+  Sfx.go();toast('بدأت رحلتك — القرار الأول أخذته');
+};
+ $('#rv-fromdate').onclick=()=>{
+  const v=$('#rv-date').value;
+  const ts=v?new Date(v+'T00:00:00').getTime():NaN;
+  if(isNaN(ts)||ts>Date.now()){toast('اختر تاريخ بداية صحيحاً في الماضي');Sfx.error();return}
+  S.recovery.start=ts;save();renderRecovery();checkMilestone();
+  toast('تم تسجيل بدايتك — كل يوم محسوب');
+};
+ $('#rv-relapse').onclick=()=>confirmModal(
+  'تسجيل تعثر؟',
+  'التعثر ليس نهاية الرحلة — البقاء على الأرض هو النهاية. سجّله بصدق: سيُحفظ إنجازك السابق في سجلك، وتبدأ سلسلة جديدة من هذه اللحظة.',
+  'تسجيل والبدء من جديد',doRelapse);
+ $('#rv-newquote').onclick=()=>{
+  let i;do{i=Math.floor(Math.random()*QUOTES.length)}while(i===quoteIdx&&QUOTES.length>1);
+  quoteIdx=i;
+  const q=$('#rv-quote');q.textContent=QUOTES[i];
+  q.classList.remove('anim');void q.offsetWidth;q.classList.add('anim');
+  Sfx.click();
+};
+ $('#rv-hist').addEventListener('click',e=>{
+  const b=e.target.closest('[data-rdel]');if(!b)return;
+  const r=S.recovery;
+  const idx=r.relapses.findIndex(x=>x.id===b.dataset.rdel);if(idx<0)return;
+  const[l]=r.relapses.splice(idx,1);save();renderRecovery();
+  toast('تم حذف التعثر من السجل',{label:'تراجع',fn:()=>{r.relapses.splice(idx,0,l);save();renderRecovery()}});
+});
+
+/* ================= غرفة الطوارئ: تنفّس ٤-٧-٨ ================= */
+const BPH=[{n:'شهيق',d:4},{n:'احبس',d:7},{n:'زفير',d:8}];
+const BR={timer:null,phase:0,left:4,cycles:0,running:false};
+function setBPhase(i){
+  const p=BPH[i],c=$('#br-circle');
+  $('#br-label').textContent=p.n;
+  c.style.transitionDuration=p.d+'s';
+  /* الشهيق يوسّع الدائرة، الزفير يعيدها — والاحتباس يثبّتها */
+  c.style.transform=(i===0||i===1)?'scale(1.38)':'scale(1)';
+  if(i===0)Sfx.tone(587,{d:.3,v:.22});
+  else if(i===1)Sfx.tone(494,{d:.25,v:.18});
+  else Sfx.tone(392,{d:.5,v:.22});
+}
+function brTick(){
+  if(!BR.running)return;
+  BR.left-=.1;
+  $('#br-num').textContent=Math.ceil(Math.max(0,BR.left));
+  if(BR.left<=0){
+    BR.phase=(BR.phase+1)%3;
+    if(BR.phase===0){BR.cycles++;$('#br-cycles').textContent='الدورة '+BR.cycles+' — شهيق ٤ · احبس ٧ · زفير ٨'}
+    BR.left=BPH[BR.phase].d;
+    setBPhase(BR.phase);
+  }
+}
+function openPanic(){
+  Sfx.ensure();
+  panicEl.hidden=false;
+  BR.phase=0;BR.left=BPH[0].d;BR.cycles=0;BR.running=true;
+  $('#br-label').textContent=BPH[0].n;
+  $('#br-num').textContent=BPH[0].d;
+  $('#br-cycles').textContent='الدورة 0 — شهيق ٤ · احبس ٧ · زفير ٨';
+  const c=$('#br-circle');
+  c.style.transitionDuration='0s';c.style.transform='scale(1)';
+  requestAnimationFrame(()=>{panicEl.classList.add('show');setBPhase(0)});
+  clearInterval(BR.timer);
+  BR.timer=setInterval(brTick,100);
+}
+function closePanic(){
+  BR.running=false;clearInterval(BR.timer);BR.timer=null;
+  panicEl.classList.remove('show');
+  setTimeout(()=>{panicEl.hidden=true;const c=$('#br-circle');c.style.transitionDuration='0s';c.style.transform='scale(1)'},300);
+}
+ $('#rv-panic').onclick=openPanic;
+ $('#panic-close').onclick=closePanic;
+ $('#panic-win').onclick=()=>{
+  S.recovery.resisted++;save();
+  closePanic();renderRecovery();
+  Sfx.done();
+  toast('أحسنت — كل موجة تكسرها اليوم تُصغّر موجات الغد');
+};
+ $('#panic-workout').onclick=()=>{
+  closePanic();closeRecovery();
+  const sec=S.sections.find(s=>s.exercises.length);
+  if(sec){startPlayer(sec);toast('حوّلت الرغبة إلى طاقة — هذا هو الانتصار الحقيقي')}
+  else toast('أنشئ قسماً بتمارين أولاً — ثم حوّل رغبتك إلى طاقة');
+};
+
 /* ================= مشغّل الجلسة ================= */
 const playerEl=$('#player'),pSecEl=$('#p-sec'),pChipEl=$('#p-chip'),pConfirmEl=$('#p-confirm');
 const ringwrapEl=$('#ringwrap'),ringBarEl=$('#ring-bar'),ringHeadEl=$('#ring-head');
@@ -1429,6 +1867,14 @@ document.addEventListener('keydown',e=>{
     }
     return;
   }
+  if(!panicEl.hidden){
+    if(e.key==='Escape')closePanic();
+    return;
+  }
+  if(!recviewEl.hidden){
+    if(e.key==='Escape')closeRecovery();
+    return;
+  }
   if(!statsviewEl.hidden){
     if(e.key==='Escape')closeStats();
     return;
@@ -1501,6 +1947,9 @@ if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
 
 /* ================= الإقلاع ================= */
 load();render();syncSoundIcon();
+/* حد أقصى لتاريخ البداية في قسم التعافي = اليوم */
+(()=>{const t=new Date();
+  $('#rv-date').max=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')})();
 document.addEventListener('pointerdown',()=>Sfx.ensure(),{once:true}); // تفعيل الصوت من أول لمسة
 if('speechSynthesis' in window)speechSynthesis.getVoices(); // تحضير الأصوات العربية للنطق
 </script>
