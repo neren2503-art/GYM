@@ -1,13 +1,15 @@
 /* عامل الخدمة — إيقاع */
-/* إصدار الكاش: غيّر الرقم عند نشر نسخة جديدة من التطبيق ليستلمها الجميع */
-const VERSION='iqa3-v1.0.0';
+/* إصدار الكاش: غيّر الرقم عند نشر نسخة جديدة ليتحدّث لدى الجميع */
+const VERSION='iqa3-v1.2.0';
 const CORE=[
   './',
   './index.html',
-  './manifest.webmanifest'
+  './widget.html',
+  './manifest.webmanifest',
+  './manifest-widget.webmanifest'
 ];
 
-/* التثبيت: تخزين هيكل التطبيق ثم التفعيل الفوري */
+/* التثبيت: تخزين هيكل التطبيق والويدجت ثم التفعيل الفوري */
 self.addEventListener('install',e=>{
   e.waitUntil(
     caches.open(VERSION).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())
@@ -24,7 +26,8 @@ self.addEventListener('activate',e=>{
 });
 
 /* الجلب:
-   - فتح التطبيق: الشبكة أولاً (لعرض آخر تحديث) مع الكاش كاحتياطي دون اتصال
+   - فتح الصفحات: الشبكة أولاً (لآخر تحديث) مع الكاش كاحتياطي دون اتصال —
+     وكل صفحة تُخزَّن تحت رابطها الحقيقي كي تبقى التطبيق والويدجت منفصلين
    - باقي الموارد (الخطوط وغيرها): الكاش أولاً للسرعة، وتُخزَّن تلقائياً عند أول نجاح */
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
@@ -33,7 +36,7 @@ self.addEventListener('fetch',e=>{
     e.respondWith(
       fetch(e.request).then(r=>{
         const cp=r.clone();
-        caches.open(VERSION).then(c=>c.put('./',cp)).catch(()=>{});
+        caches.open(VERSION).then(c=>c.put(e.request,cp)).catch(()=>{});
         return r;
       }).catch(()=>caches.match(e.request).then(h=>h||caches.match('./')))
     );
