@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0D08">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="تعافي">
+<link rel="manifest" href="manifest-widget.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='118' fill='%230B0D08'/%3E%3Cg fill='none' stroke='%2357D8C2' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M256 64 107 122v117c0 98 62 178 149 209 87-31 149-111 149-209V122z'/%3E%3Cpath d='m192 247 47 47 85-97'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='118' fill='%230B0D08'/%3E%3Cg fill='none' stroke='%2357D8C2' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M256 64 107 122v117c0 98 62 178 149 209 87-31 149-111 149-209V122z'/%3E%3Cpath d='m192 247 47 47 85-97'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>تعافي — عدّاد إيقاع</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0B0D08;--surface:#151910;--line:#242A1B;--line2:#333C27;
+  --text:#EFF3E4;--muted:#A6B096;--faint:#6F7A62;--teal:#57D8C2;--ink:#161A05;--volt:#CDF554;
+}
+html{color-scheme:dark}
+body{
+  font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100dvh;display:grid;place-items:center;
+  padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom));
+  -webkit-font-smoothing:antialiased;overscroll-behavior:none;isolation:isolate;user-select:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.05"/></svg>'),
+    radial-gradient(600px 300px at 50% -6%, rgba(87,216,194,.05), transparent 60%);
+}
+.wcol{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
+/* بطاقة الويدجت */
+.wcard{width:min(94vw,380px);background:var(--surface);border:1px solid var(--line2);border-radius:28px;
+  padding:22px 22px 20px;position:relative;overflow:hidden;box-shadow:0 26px 64px rgba(0,0,0,.5);
+  animation:cardIn .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+/* علامة الدرع المائية خلف البطاقة */
+.wcard::after{content:'';position:absolute;inset-inline-start:-36px;bottom:-40px;width:175px;height:175px;opacity:.05;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2357D8C2' d='M12 3 5 5.7v5.5c0 4.6 2.9 8.4 7 9.8 4.1-1.4 7-5.2 7-9.8V5.7z'/%3E%3C/svg%3E") no-repeat center/contain}
+.w-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1}
+.w-brand{display:flex;align-items:center;gap:8px;font:600 16px Changa;color:var(--teal)}
+.w-brand svg{width:19px;height:19px;animation:shieldPulse 3.2s ease-in-out infinite}
+@keyframes shieldPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+.w-best{font-size:11px;color:var(--faint)}
+/* العدّاد */
+.w-main{text-align:center;padding:15px 0 4px;position:relative;z-index:1}
+#w-days{font:800 clamp(60px,19vw,84px)/1 Changa;color:var(--teal);display:block;
+  animation:softP 2.6s ease-in-out infinite;transform-origin:center}
+@keyframes softP{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.w-lab{font-size:12px;color:var(--muted)}
+.w-clock{font:600 clamp(19px,5.5vw,23px)/1 Changa;color:var(--text);margin-top:9px;font-variant-numeric:tabular-nums}
+/* رسالة اليوم */
+.w-quote{border-top:1px solid var(--line);margin-top:16px;padding-top:14px;text-align:center;position:relative;z-index:1}
+.w-quote small{display:block;font-size:10.5px;color:var(--faint);margin-bottom:8px}
+.w-quote p{font:600 15.5px/2 Changa;color:var(--text)}
+/* المحطة القادمة */
+.w-next{margin-top:15px;position:relative;z-index:1}
+.w-next .t{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.w-bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.w-bar i{display:block;height:100%;border-radius:99px;background:var(--teal);transition:width 1s ease}
+/* زر فتح التطبيق */
+.w-open{margin-top:17px;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:none;border:1px solid var(--line2);color:var(--muted);font:600 13px 'IBM Plex Sans Arabic';
+  padding:12px;border-radius:14px;cursor:pointer;transition:.2s;text-decoration:none;position:relative;z-index:1}
+.w-open:hover{color:var(--text);border-color:var(--faint)}
+.w-open:active{transform:scale(.98)}
+.mark{display:flex;align-items:flex-end;gap:2.5px;height:15px}
+.mark i{width:3px;border-radius:2px;background:var(--volt);display:block}
+.mark i:nth-child(1){height:6px}.mark i:nth-child(2){height:11px}.mark i:nth-child(3){height:7px}.mark i:nth-child(4){height:14px}
+/* الحالة الفارغة (قبل بدء الرحلة) */
+.w-empty{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px 6px;position:relative;z-index:1}
+.w-empty .e-ic{width:56px;height:56px;color:var(--teal);opacity:.85;margin-bottom:6px}
+.w-empty h2{font:700 22px Changa}
+.w-empty p{color:var(--muted);font-size:13.5px;line-height:1.9;max-width:32ch}
+.w-empty .w-open{margin-top:14px}
+/* منطقة الإضافة للشاشة الرئيسية */
+.w-install{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.w-install p{font-size:11.5px;color:var(--faint);max-width:36ch;line-height:1.9}
+.btn-w{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:var(--ink);border:0;
+  font:600 13.5px 'IBM Plex Sans Arabic';padding:12px 20px;border-radius:13px;cursor:pointer;
+  box-shadow:0 4px 0 rgba(0,0,0,.35);transition:transform .15s,box-shadow .15s}
+.btn-w:hover{filter:brightness(1.05)}
+.btn-w:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+.btn-w svg{width:15px;height:15px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</head>
+<body>
+<div class="wcol">
+
+  <!-- بطاقة الويدجت -->
+  <div class="wcard" id="w-card" hidden>
+    <div class="w-top">
+      <div class="w-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.7v5.5c0 4.6 2.9 8.4 7 9.8 4.1-1.4 7-5.2 7-9.8V5.7z"/><path d="m9 11.6 2.2 2.2 4-4.6"/></svg>
+        <span>تعافي</span>
+      </div>
+      <div class="w-best" id="w-best"></div>
+    </div>
+    <div class="w-main">
+      <b id="w-days">0</b>
+      <span class="w-lab">أيام نظيفة</span>
+      <div class="w-clock" id="w-clock">00:00:00</div>
+    </div>
+    <div class="w-quote">
+      <small>رسالة اليوم</small>
+      <p id="w-quote"></p>
+    </div>
+    <div class="w-next">
+      <div class="t"><span id="w-nextlabel"></span><span id="w-nextpct"></span></div>
+      <div class="w-bar"><i id="w-nextbar"></i></div>
+    </div>
+    <a class="w-open" href="./index.html">
+      <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      فتح تطبيق إيقاع
+    </a>
+  </div>
+
+  <!-- الحالة الفارغة: الرحلة لم تبدأ بعد -->
+  <div class="wcard" id="w-empty" hidden>
+    <div class="w-top">
+      <div class="w-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.7v5.5c0 4.6 2.9 8.4 7 9.8 4.1-1.4 7-5.2 7-9.8V5.7z"/><path d="m9 11.6 2.2 2.2 4-4.6"/></svg>
+        <span>تعافي</span>
+      </div>
+    </div>
+    <div class="w-empty">
+      <svg class="e-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.7v5.5c0 4.6 2.9 8.4 7 9.8 4.1-1.4 7-5.2 7-9.8V5.7z"/><path d="m9 11.6 2.2 2.2 4-4.6"/></svg>
+      <h2>رحلتك لم تبدأ بعد</h2>
+      <p>افتح تطبيق إيقاع، ادخل قسم التعافي واضغط «أبدأ رحلتي الآن» — ثم عُد إلى هنا وستجد عدّادك حيّاً.</p>
+      <a class="w-open" href="./index.html">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        فتح تطبيق إيقاع
+      </a>
+    </div>
+  </div>
+
+  <!-- إرشادات إضافة الويدجت للشاشة الرئيسية -->
+  <div class="w-install" id="w-install">
+    <button class="btn-w" id="w-install-btn" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></svg>
+      تثبيت الويدجت
+    </button>
+    <p id="w-hint"></p>
+  </div>
+
+</div>
+<script>
+'use strict';
+/* ================= بيانات مشتركة مع التطبيق (نفس مفتاح التخزين ونفس الأصل) ================= */
+const KEY='iqa3-app-v1';
+const $=s=>document.querySelector(s);
+const MILES=[
+  {d:1,l:'الخطوة الأولى'},{d:3,l:'كسر الحلقة'},{d:7,l:'أسبوع كامل'},{d:14,l:'أسبوعان'},
+  {d:30,l:'شهر كامل'},{d:60,l:'شهران'},{d:90,l:'الهدف الكبير'},{d:180,l:'نصف سنة'},{d:365,l:'سنة كاملة'}
+];
+/* رسائل اليوم — تتغير كل يوم تلقائياً */
+const QUOTES=[
+  'أنت أقوى مما تتصور — والبرهان هو هذا اليوم الذي تعيشه الآن.',
+  'كل يوم نظيف رسالة منك إلى نفسك: أنا أستحق الأفضل.',
+  'الهدوء الذي تشعر به اليوم هو ثمرة صمودك بالأمس.',
+  'لا تحسب الأيام… دع الأيام تحسبك.',
+  'من يقاوم اليوم، يبتسم غداً ابتسامة المنتصر.',
+  'سلسلتك تشتعل بالنور — لا تدع لحظة واحدة تطفئها.',
+  'النسخة القادمة منك تبدأ من إصرارك هذه اللحظة.',
+  'التغيير صعب، لكن البقاء كما أنت أصعب.',
+  'عقلك يعيد بناء نفسه مع كل يوم تتجاوزه بسلام.',
+  'الثقة لا تُشترى… تُبنى يوماً بعد يوم، مثلك الآن تماماً.',
+  'أنت لا تركض من شيء — أنت تركض نحو نفسك.',
+  'هذا اليوم رقم آخر في دفتر انتصاراتك، اكتبه بفخر.',
+  'الرغبة تصرخ… وإرادتك تهمس بهدوء: أنا قررت.',
+  'كل صباح تصحو فيه على قرارك هو استثمار لن يخسر أبداً.',
+  'الأقوياء ليسوا من لا يُختبرون، بل من يجتازون الاختبار.',
+  'استمر… فالطريق الذي قطعته أطول بكثير مما تتخيل.'
+];
+/* رقم اليوم المحلي — لاختيار رسالة ثابتة طوال اليوم */
+function dayNumber(){const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000)}
+function humanDur(days){const d=Math.floor(days),h=Math.round((days-d)*24);if(d<=0)return h+' ساعة';if(h>0)return d+' يوم و '+h+' ساعة';return d+' يوم'}
+function loadRec(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.recovery)return d.recovery}catch(e){}
+  return null;
+}
+let rec=null;
+function render(){
+  rec=loadRec();
+  const card=$('#w-card'),empty=$('#w-empty');
+  if(!rec||!rec.start){card.hidden=true;empty.hidden=false;return}
+  card.hidden=false;empty.hidden=true;
+  const ms=Date.now()-rec.start;
+  const days=ms/86400000,dInt=Math.floor(days);
+  $('#w-days').textContent=dInt;
+  const best=Math.max(rec.best||0,dInt);
+  $('#w-best').textContent='أفضل إنجاز: '+best+' يوم';
+  const next=MILES.find(x=>x.d>days);
+  if(next){
+    const prevD=[...MILES].reverse().find(x=>x.d<=days);
+    const base=prevD?prevD.d:0;
+    const frac=Math.min(1,Math.max(0,(days-base)/(next.d-base)));
+    $('#w-nextlabel').textContent='«'+next.l+'» — بقي '+humanDur(next.d-days);
+    $('#w-nextpct').textContent=Math.round(frac*100)+'%';
+    $('#w-nextbar').style.width=(frac*100)+'%';
+  }else{
+    $('#w-nextlabel').textContent='أنجزت كل المحطات — أنت أسطورة';
+    $('#w-nextpct').textContent='100%';
+    $('#w-nextbar').style.width='100%';
+  }
+  $('#w-quote').textContent='«'+QUOTES[dayNumber()%QUOTES.length]+'»';
+  tick();
+}
+function tick(){
+  if(!rec||!rec.start)return;
+  const ms=Date.now()-rec.start;
+  const h=String(Math.floor(ms/3600000)%24).padStart(2,'0'),
+        m=String(Math.floor(ms/60000)%60).padStart(2,'0'),
+        s=String(Math.floor(ms/1000)%60).padStart(2,'0');
+  $('#w-clock').textContent=h+':'+m+':'+s;
+  const d=Math.floor(ms/86400000);
+  if(String(d)!=$('#w-days').textContent)render(); /* يوم جديد — تحديث كامل */
+}
+setInterval(tick,1000);
+window.addEventListener('storage',render); /* مزامنة فورية إن كان التطبيق مفتوحاً في تبويب آخر */
+render();
+
+/* ================= إرشادات الإضافة للشاشة الرئيسية ================= */
+const ua=navigator.userAgent;
+const isIOS=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone=matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+if(isStandalone){
+  $('#w-install').hidden=true; /* الويدجت مثبّت بالفعل — لا حاجة للإرشادات */
+}else if(isIOS){
+  $('#w-hint').textContent='لإضافة الويدجت: اضغط زر المشاركة في سفاري ثم «إضافة إلى الشاشة الرئيسية» — وسيظهر بأيقونة تعافي.';
+}else{
+  $('#w-hint').textContent='أضف هذه الصفحة إلى الشاشة الرئيسية من قائمة المتصفح لتصبح ويدجت ثابتة تعمل دون إنترنت.';
+}
+let wp=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();wp=e;$('#w-install-btn').hidden=false;
+});
+ $('#w-install-btn').onclick=async()=>{
+  if(!wp)return;
+  wp.prompt();
+  try{await wp.userChoice}catch(e){}
+  wp=null;$('#w-install-btn').hidden=true;
+};
+window.addEventListener('appinstalled',()=>{$('#w-install').hidden=true});
+
+/* ================= عامل الخدمة: فتح فوري ودون اتصال ================= */
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

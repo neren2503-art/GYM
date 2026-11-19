@@ -1,0 +1,28 @@
+{
+  "name": "تعافي — ويدجت إيقاع",
+  "short_name": "تعافي",
+  "description": "ويدجت الشاشة الرئيسية: عدّاد أيام التعافي الحيّ مع رسالة تحفيزية تتغير كل يوم.",
+  "lang": "ar",
+  "dir": "rtl",
+  "id": "./widget.html",
+  "start_url": "./widget.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0D08",
+  "theme_color": "#0B0D08",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='118' fill='%230B0D08'/%3E%3Cg fill='none' stroke='%2357D8C2' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M256 64 107 122v117c0 98 62 178 149 209 87-31 149-111 149-209V122z'/%3E%3Cpath d='m192 247 47 47 85-97'/%3E%3C/g%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230B0D08'/%3E%3Cg fill='none' stroke='%2357D8C2' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M256 64 107 122v117c0 98 62 178 149 209 87-31 149-111 149-209V122z'/%3E%3Cpath d='m192 247 47 47 85-97'/%3E%3C/g%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
